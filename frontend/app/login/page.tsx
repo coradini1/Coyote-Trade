@@ -7,24 +7,22 @@ import Link from "next/link";
 export default function Home() {
   return (
     <main className={styles.main}>
-      <div className={styles.left}>
-        <Tabs defaultValue="Login" className="w-[400px]">
-          <TabsList>
-            <TabsTrigger value="Login">Login</TabsTrigger>
-            <TabsTrigger value="password">Password</TabsTrigger>
-          </TabsList>
-          <TabsContent value="Login">
-            <Input type="email" placeholder="Email" />
-            <Input type="password" placeholder="Senha" />
-            <Link href="/change-password">
-              <p style={{ color: "white" }}>Redefinir a sua senha</p>
-            </Link>
-            <Button>Acessar</Button>
-          </TabsContent>
-          <TabsContent value="password">Preencha sua senha</TabsContent>
-        </Tabs>
-      </div>
-      <div></div>
+      <LoginModal />
     </main>
+  );
+}
+
+function LoginModal() {
+  return (
+    <div className={styles.modalCard}>
+      <h1>Acesse sua conta</h1>
+      <input placeholder="Email" />
+      <input placeholder="Senha" />
+      <p>
+        Esqueceu sua senha?{" "}
+        <a href="#" style={{ color: "rgb(114, 135, 253)" }}>redefinir senha</a>
+      </p>
+    <button>Log in</button>
+    </div>
   );
 }
