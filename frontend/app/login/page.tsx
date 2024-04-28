@@ -1,10 +1,13 @@
 'use client';
-
 import React, { useEffect, useState } from "react"
+
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox"
+import { Toaster } from "@/components/ui/toaster"
 
 import Input from "@/components/custom/Input/Input"
+
+import { useToast } from "@/components/ui/use-toast"
 
 type FormProps = {
   email: string
@@ -18,20 +21,27 @@ export default function Home() {
     password: "",
     persist: false
   })
+  const { toast } = useToast()
 
   function handleForm(e: React.FormEvent) {
     e.preventDefault()
+
+    toast({
+      title: "Test notification",
+      description: "I'm testing the notification system"
+    })
     console.log(formData)
   }
 
   return (
     <main className="bg-base h-screen w-screen flex flex-col items-center justify-center">
+      <Toaster />
       <div className="bg-white w-[450px] py-8 px-12 rounded-xl shadow-xl">
         <h1 className="font-bold text-textBase text-2xl text-center mt-20">Access your account</h1>
         <form onSubmit={(e: React.FormEvent) => handleForm(e)}  className="flex flex-col gap-6 mt-10">
           <Input 
-            type="email" 
-            placeholder="Email" 
+            type="email"
+            placeholder="Email"
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
               const { target } = e
               
@@ -39,8 +49,8 @@ export default function Home() {
                 ...formData,
                 email: target.value,
               })
-            }} 
-            value={formData?.email || ""} 
+            }}
+            value={formData?.email || ""}
             required
           />
           <Input 
@@ -54,7 +64,8 @@ export default function Home() {
                 password: target.value,
               })
             }}
-            required 
+            value={formData?.password || ""}
+            required
           />
 
           <div className="flex flex-row items-center gap-2 mb-12">
