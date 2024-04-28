@@ -1,16 +1,72 @@
-import Input from "@/components/custom/Input/Input";
+'use client';
+
+import React, { useEffect, useState } from "react"
+import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox"
+
+import Input from "@/components/custom/Input/Input"
+
+type FormProps = {
+  email: string
+  password: string
+  persist?: boolean
+}
 
 export default function Home() {
+  const [formData, setFormData] = useState<FormProps>({
+    email: "",
+    password: "",
+    persist: false
+  })
+
+  function handleForm(e: React.FormEvent) {
+    e.preventDefault()
+    console.log(formData)
+  }
+
   return (
-    <main className="h-screen w-screen flex flex-col items-center justify-center">
-      <div className="w-96 p-8 rounded-sm shadow-xl">
-        <h1 className="font-bold text-xl text-center">Access your account</h1>
-        <form className="flex flex-col gap-6 mt-10">
-          <Input type="email" placeholder="Email" required />
-          <Input type="password" placeholder="Password" required />
+    <main className="bg-base h-screen w-screen flex flex-col items-center justify-center">
+      <div className="bg-white w-[450px] py-8 px-12 rounded-xl shadow-xl">
+        <h1 className="font-bold text-textBase text-2xl text-center mt-20">Access your account</h1>
+        <form onSubmit={(e: React.FormEvent) => handleForm(e)}  className="flex flex-col gap-6 mt-10">
+          <Input 
+            type="email" 
+            placeholder="Email" 
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              const { target } = e
+              
+              setFormData({
+                ...formData,
+                email: target.value,
+              })
+            }} 
+            value={formData?.email || ""} 
+            required
+          />
+          <Input 
+            type="password"
+            placeholder="Password"
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              const { target } = e
+              
+              setFormData({
+                ...formData,
+                password: target.value,
+              })
+            }}
+            required 
+          />
+
+          <div className="flex flex-row items-center gap-2 mb-12">
+            <Checkbox
+              id="remember-password"
+              onCheckedChange={(e: boolean) => setFormData({...formData, persist: e})}
+            />
+            <Label htmlFor="remember-password" className="text-xs">Remember</Label>
+          </div>
           <button 
             type="submit"
-            className="bg-sky-500 py-4 px-2 font-medium text-white rounded-xl"
+            className="bg-primary hover:bg-primary py-4 px-2 font-medium text-white rounded-xl hover:brightness-125 transition ease-out dduration-200"
           >
             Login
           </button>
