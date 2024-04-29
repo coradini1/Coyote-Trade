@@ -1,4 +1,4 @@
-'use client';
+'use client'
 import React, { useEffect, useState } from "react"
 
 import { Label } from "@/components/ui/label";
@@ -36,7 +36,7 @@ export default function Home() {
   return (
     <main className="bg-base h-screen w-screen flex flex-col items-center justify-center">
       <Toaster />
-      <div className="bg-white w-[450px] py-8 px-12 rounded-xl shadow-xl">
+      <div className="bg-white w-[450px] py-8 px-12 border-lavender border-solid border-2 rounded-xl shadow-xl">
         <h1 className="font-bold text-textBase text-2xl text-center mt-20">Access your account</h1>
         <form onSubmit={(e: React.FormEvent) => handleForm(e)}  className="flex flex-col gap-6 mt-10">
           <Input 
@@ -50,7 +50,6 @@ export default function Home() {
                 email: target.value,
               })
             }}
-            value={formData?.email || ""}
             required
           />
           <Input 
@@ -64,25 +63,47 @@ export default function Home() {
                 password: target.value,
               })
             }}
-            value={formData?.password || ""}
             required
           />
 
-          <div className="flex flex-row items-center gap-2 mb-12">
-            <Checkbox
-              id="remember-password"
-              onCheckedChange={(e: boolean) => setFormData({...formData, persist: e})}
-            />
-            <Label htmlFor="remember-password" className="text-xs">Remember</Label>
+          <div className="flex flex-row justify-between items-center gap-2 mb-12">
+            <div className="flex flex-row items-center gap-1">
+              <Checkbox
+                id="remember-password"
+                onCheckedChange={(e: boolean) => setFormData({...formData, persist: e})}
+              />
+              <Label htmlFor="remember-password" className="text-xs">Remember</Label>
+            </div>
+            <Link href="/forgot-password" text="Reset password" />
           </div>
-          <button 
-            type="submit"
-            className="bg-primary hover:bg-primary py-4 px-2 font-medium text-white rounded-xl hover:brightness-125 transition ease-out dduration-200"
-          >
-            Login
-          </button>
+
+          <div className="flex flex-col">
+            <button 
+              type="submit"
+              className="bg-lavender-400 py-4 px-2 font-medium text-white rounded-xl hover:bg-lavender-500 transition ease-out duration-200"
+            >
+              Login
+            </button>
+            <p className="text-xs text-textBase text-center mt-4">
+              New here? <Link href="/register" text="Create an account" />
+            </p>
+          </div>
         </form>
       </div>
     </main>
   );
 }
+
+function Link({ href, text }: { href: string, text: string}) {
+  return (
+    <a 
+      href={href}
+      className="relative text-lavender-400 text-xs after:content-[''] after:absolute after:w-0 after:h-[2px]
+                after:bottom-0 after:left-0 after:bg-lavender after:transition-all after:duration-300 after:ease-out
+                hover:after:w-full hover:after:transition-all hover:after:duration-300 hover:after:ease-out"
+    >
+      {text}
+    </a>
+  )
+}
+

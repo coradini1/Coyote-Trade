@@ -4,6 +4,11 @@
 
 @layer base {
   :root {
+    html {
+      @apply antialiased;
+      @apply text-text;
+    }
+
     --background: 0 0% 100%;
     --foreground: 224 71.4% 4.1%;
 
