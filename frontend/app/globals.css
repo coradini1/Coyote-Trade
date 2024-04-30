@@ -10,10 +10,6 @@
       @apply text-text;
     }
 
-    body *:not(.spinner) {
-      @apply transition-colors ease-out duration-300;
-    }
-
     --background: 0 0% 100%;
     --foreground: 224 71.4% 4.1%;
 
@@ -67,3 +63,4 @@
     @apply bg-background text-foreground;
   }
 }
+
