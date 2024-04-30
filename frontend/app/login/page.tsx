@@ -33,6 +33,16 @@ export default function Home() {
 
   const { toast } = useToast()
 
+  useEffect(() => {
+    const theme = localStorage.getItem("darkMode")
+
+    if (theme === "true") {
+      setDarkMode(true)
+    } else {
+      setDarkMode(false)
+    }
+  }, [])
+
   function handleForm(e: React.FormEvent) {
     e.preventDefault()
 
@@ -57,7 +67,13 @@ export default function Home() {
       <main className="bg-base dark:bg-baseDark h-screen w-screen flex flex-col items-center justify-center transition-colors ease-out duration-300">
         <Toaster />
         <div className={`${isResetingPassword && "flex flex-col justify-center"} relative bg-white dark:bg-foregroundDark w-[450px] min-h-[548px] py-8 px-12 border-lavender border-solid border-2 rounded-xl shadow-xl transition-colors ease-out duration-300`}>
-          <button className="absolute top-4 right-4 w-10 flex flex-col items-center bg-lavender text-white py-2 px-4 rounded-full" onClick={() => setDarkMode(!darkMode)}>
+          <button 
+            className="absolute top-4 right-4 w-10 flex flex-col items-center bg-lavender text-white py-2 px-4 rounded-full"
+            onClick={() => {
+              localStorage.setItem("darkMode", String(!darkMode))
+              setDarkMode(!darkMode)
+            }}
+          >
             {!darkMode ? (<MdSunny className="text-2xl" />) : (<IoMdMoon className="text-2xl" />)}
           </button>
           { !loading ?
