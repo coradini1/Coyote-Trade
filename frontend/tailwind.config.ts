@@ -56,6 +56,9 @@ const config = {
         foreground: "hsl(var(--foreground))",
         textBase: "hsl(var(--text-base))",
         base: "hsl(var(--base))",
+        baseDark: "hsl(var(--base-dark))",
+        textBaseDark: "hsl(var(--text-base-dark))",
+        foregroundDark: "hsl(var(--foreground-dark))",
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",

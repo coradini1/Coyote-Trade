@@ -15,19 +15,19 @@ function Input({type, placeholder, ...props}: InputProps) {
       <input 
         {...props}
         type={showPassword ? "text" : type}
-        className="w-full text-text focus:text-lavender outline-none p-3 rounded-xl border-solid border-2 focus:border-primary transition-all ease-out duration-300" 
+        className="w-full dark:bg-foregroundDark text-text dark:text-textBaseDark focus:text-lavender outline-none p-3 rounded-xl border-solid border-2 focus:border-primary transition-all ease-out duration-300" 
         placeholder={placeholder}
       />
       {type === "password" && (
         <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
           {!showPassword ? (
             <IoEyeOffOutline 
-              className="text-text text-lg cursor-pointer"
+              className="text-text text-lg cursor-pointer dark:text-textBaseDark"
               onClick={() => setShowPassword(!showPassword)}
             />
           ) : (
               <IoEyeOutline 
-                className="text-text text-lg cursor-pointer"
+                className="text-text text-lg cursor-pointer dark:text-textBaseDark"
                 onClick={() => setShowPassword(!showPassword)}
               />
             )}

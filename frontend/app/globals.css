@@ -9,6 +9,11 @@
       @apply antialiased;
       @apply text-text;
     }
+
+    body *:not(.spinner) {
+      @apply transition-colors ease-out duration-300;
+    }
+
     --background: 0 0% 100%;
     --foreground: 224 71.4% 4.1%;
 
@@ -19,7 +24,11 @@
     --popover-foreground: 224 71.4% 4.1%;
 
     --base: 220 23% 95%;
+    --base-dark: 240deg, 21%, 12%;
 
+    --foreground-dark: 240 21% 15%;
+
+    --text-base-dark: 226, 64%, 88%;
     --text-base: 234 16% 35%; 
 
     --primary: 231 97% 72%;
@@ -45,34 +54,9 @@
   }
 
   .dark {
-    --background: 224 71.4% 4.1%;
-    --foreground: 210 20% 98%;
-
-    --card: 224 71.4% 4.1%;
-    --card-foreground: 210 20% 98%;
-
-    --popover: 224 71.4% 4.1%;
-    --popover-foreground: 210 20% 98%;
-
-    --primary: 210 20% 98%;
-    --primary-foreground: 220.9 39.3% 11%;
-
-    --secondary: 215 27.9% 16.9%;
-    --secondary-foreground: 210 20% 98%;
-
-    --muted: 215 27.9% 16.9%;
-    --muted-foreground: 217.9 10.6% 64.9%;
-
-    --accent: 215 27.9% 16.9%;
-    --accent-foreground: 210 20% 98%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 20% 98%;
-
-    --border: 215 27.9% 16.9%;
-    --input: 215 27.9% 16.9%;
-    --ring: 216 12.2% 83.9%;
+    --background: 240, 21%, 15%;
   }
+
 }
 
 @layer base {
