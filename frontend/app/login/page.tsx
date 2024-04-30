@@ -1,6 +1,7 @@
 'use client'
 import React, { useEffect, useState } from "react"
 
+import { motion } from "framer-motion"
 import { MdSunny } from "react-icons/md"
 import { IoMdArrowBack, IoMdMoon } from "react-icons/io"
 
@@ -43,6 +44,28 @@ export default function Home() {
     }
   }, [])
 
+  const container = {
+
+    hidden: { opacity: 1, scale: 1 },
+    visible: {
+      opacity: 1,
+      scale: 1,
+
+      transition: {
+        delayChildren: 0,
+        staggerChildren: 0.2
+      }
+    }
+  };
+
+  const item = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1
+    }
+  };
+
   function handleForm(e: React.FormEvent) {
     e.preventDefault()
 
@@ -66,7 +89,7 @@ export default function Home() {
     <div className={darkMode ? "dark" : ""}>
       <main className="bg-base dark:bg-baseDark h-screen w-screen flex flex-col items-center justify-center transition-colors ease-out duration-300">
         <Toaster />
-        <div className={`${isResetingPassword && "flex flex-col justify-center"} relative bg-white dark:bg-foregroundDark w-[450px] min-h-[548px] py-8 px-12 border-lavender border-solid border-2 rounded-xl shadow-xl transition-colors ease-out duration-300`}>
+        <motion.div initial="hidden" animate="visible" variants={container} className={`${isResetingPassword && "flex flex-col justify-center"} relative bg-white dark:bg-foregroundDark w-[450px] min-h-[548px] py-8 px-12 border-lavender border-solid border-2 rounded-xl shadow-xl transition-colors ease-out duration-300`}>
           <button 
             className="absolute top-4 right-4 w-10 flex flex-col items-center bg-lavender text-white py-2 px-4 rounded-full"
             onClick={() => {
@@ -82,9 +105,10 @@ export default function Home() {
                 { !isResetingPassword ? 
                   (
                     <>  
-                      <h1 className="font-bold text-textBase dark:text-textBaseDark text-2xl text-center mt-20 transition-colors ease-out duration-300">Access your account</h1>
+                      <motion.h1 variants={item} className="font-bold text-textBase dark:text-textBaseDark text-2xl text-center mt-20 transition-colors ease-out duration-300">Access your account</motion.h1>
                       <form onSubmit={(e: React.FormEvent) => handleForm(e)}  className="flex flex-col gap-6 mt-10">
                         <Input 
+                          variantItem={item}
                           type="email"
                           placeholder="Email"
                           onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -97,7 +121,8 @@ export default function Home() {
                           }}
                           required
                         />
-                        <Input 
+                        <Input
+                          variantItem={item}
                           type="password"
                           placeholder="Password"
                           onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -111,7 +136,7 @@ export default function Home() {
                           required
                         />
 
-                        <div className="flex flex-row justify-between items-center gap-2 mb-12">
+                        <motion.div variants={item} className="flex flex-row justify-between items-center gap-2 mb-12">
                           <div className="flex flex-row items-center gap-1">
                             <Checkbox
                               id="remember-password"
@@ -120,18 +145,19 @@ export default function Home() {
                             <Label htmlFor="remember-password" className="text-xs dark:text-textBaseDark transition-colors ease-out duration-300">Remember</Label>
                           </div>
                           <Link onClick={handleResetPassword} href="#" text="Reset password" />
-                        </div>
+                        </motion.div>
 
                         <div className="flex flex-col">
-                          <button 
+                          <motion.button 
+                            variants={item}
                             type="submit"
                             className="bg-lavender py-4 px-2 font-medium text-white rounded-xl hover:bg-lavender-500 transition ease-out duration-200"
                           >
                             Login
-                          </button>
-                          <p className="text-xs text-textBase dark:text-textBaseDark text-center mt-4 transition-colors ease-out duration-300">
+                          </motion.button>
+                          <motion.p variants={item} className="text-xs text-textBase dark:text-textBaseDark text-center mt-4 transition-colors ease-out duration-300">
                             New here? <Link href="/register" text="Create an account" />
-                          </p>
+                          </motion.p>
                         </div>
                       </form>
                     </>
@@ -142,9 +168,10 @@ export default function Home() {
                           <IoMdArrowBack className="text-2xl" /> <p>Back</p>
                         </span>
                       </button>
-                      <h1 className={`font-bold text-textBase dark:text-textBaseDark text-2xl text-center ${!isResetingPassword && "mt-20"} transition-colors ease-out duration-300`}>Type your email to reset your password</h1>
+                      <motion.h1 variants={item} className={`font-bold text-textBase dark:text-textBaseDark text-2xl text-center ${!isResetingPassword && "mt-20"} transition-colors ease-out duration-300`}>Type your email to reset your password</motion.h1>
                       <form onSubmit={(e: React.FormEvent) => handleForm(e)}  className="flex flex-col gap-6 mt-10">
-                        <Input 
+                        <Input
+                          variantItem={item}
                           type="email"
                           placeholder="Email"
                           onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -158,18 +185,19 @@ export default function Home() {
                           required
                         />
 
-                        <button 
+                        <motion.button
+                          variants={item}
                           type="submit"
                           className="bg-lavender py-4 px-2 font-medium text-white rounded-xl hover:bg-lavender-500 transition ease-out duration-200"
                         >
                           Reset password
-                        </button>
+                        </motion.button>
                       </form>
                     </>
                   )}
               </>
             ) : (<Spinner />)}
-        </div>
+        </motion.div>
       </main>
     </div>
   )

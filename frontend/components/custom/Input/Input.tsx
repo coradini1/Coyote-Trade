@@ -1,17 +1,19 @@
 import React, { useState } from 'react'
 import { IoEyeOutline, IoEyeOffOutline } from 'react-icons/io5'
+import { motion } from 'framer-motion'
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   type: "email" | "text" | "password"
   placeholder: string
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
+  variantItem?: {}
 }
 
-function Input({type, placeholder, ...props}: InputProps) {
+function Input({type, placeholder, variantItem, ...props}: InputProps) {
   const [showPassword, setShowPassword] = useState(false)
 
   return (
-    <div className="relative">
+    <motion.div variants={variantItem} className="relative">
       <input 
         {...props}
         type={showPassword ? "text" : type}
@@ -33,7 +35,7 @@ function Input({type, placeholder, ...props}: InputProps) {
             )}
         </div>
       )}
-    </div>
+    </motion.div>
   )
 }
 
