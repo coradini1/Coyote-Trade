@@ -38,7 +38,7 @@ export default function Home() {
     const theme = localStorage.getItem("darkMode")
 
     if (theme === "true") {
-      setDarkMode(true)
+    setDarkMode(true)
     } else {
       setDarkMode(false)
     }

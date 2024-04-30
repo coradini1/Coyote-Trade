@@ -5,6 +5,7 @@ export default function Home() {
     <main>
       <h1>index</h1>
       <Link href="/login">login</Link>
+      <Link href="/register">register</Link>
     </main>
   );
 }
