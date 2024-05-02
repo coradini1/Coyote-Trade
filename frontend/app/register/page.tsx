@@ -3,10 +3,8 @@ import React, { useEffect, useState } from "react";
 
 import { motion } from "framer-motion";
 import { MdSunny } from "react-icons/md";
-import { IoMdArrowBack, IoMdMoon } from "react-icons/io";
+import { IoMdMoon } from "react-icons/io";
 
-import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Toaster } from "@/components/ui/toaster";
 
 import Link from "@/components/custom/Link/Link";
@@ -80,15 +78,6 @@ export default function Home() {
     console.log(formData);
   }
 
-  function handleResetPassword() {
-    setLoading(true);
-    setIsResetingPassword(true);
-
-    setTimeout(() => {
-      setLoading(false);
-    }, 600);
-  }
-
   return (
     <div className={darkMode ? "dark" : ""}>
       <main className="bg-base dark:bg-baseDark h-screen w-screen flex flex-col items-center justify-center transition-colors ease-out duration-300">
@@ -98,8 +87,8 @@ export default function Home() {
           animate="visible"
           variants={container}
           className={`${
-            isResetingPassword && "flex flex-col justify-center"
-          } relative bg-white dark:bg-foregroundDark w-[450px] min-h-[548px] py-8 px-12 border-lavender border-solid border-2 rounded-xl shadow-xl transition-colors ease-out duration-300`}
+isResetingPassword && "flex flex-col justify-center"
+} relative bg-white dark:bg-foregroundDark w-[450px] min-h-[548px] py-8 px-12 border-lavender border-solid border-2 rounded-xl shadow-xl transition-colors ease-out duration-300`}
         >
           <button
             className="absolute top-4 right-4 w-10 flex flex-col items-center bg-lavender text-white py-2 px-4 rounded-full"
@@ -111,8 +100,8 @@ export default function Home() {
             {!darkMode ? (
               <MdSunny className="text-2xl" />
             ) : (
-              <IoMdMoon className="text-2xl" />
-            )}
+                <IoMdMoon className="text-2xl" />
+              )}
           </button>
           {!loading ? (
             <>
@@ -127,49 +116,37 @@ export default function Home() {
                   onSubmit={(e: React.FormEvent) => handleForm(e)}
                   className="flex flex-col gap-6 mt-10"
                 >
+                  <div className="flex flex-row items-center justify-center gap-2">
+                    <Input
+                      variantItem={item}
+                      type="text"
+                      placeholder="Name"
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                        const { target } = e;
+
+                        setFormData({
+                          ...formData,
+                          name: target.value,
+                        });
+                      }}
+                      required
+                    />
+                    <Input
+                      variantItem={item}
+                      type="text"
+                      placeholder="Surname"
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                        const { target } = e;
+
+                        setFormData({
+                          ...formData,
+                          surname: target.value,
+                        });
+                      }}
+                      required
+                    />
+                  </div>
                   <Input
-                    variantItem={item}
-                    type="text"
-                    placeholder="Name"
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                      const { target } = e;
-
-                      setFormData({
-                        ...formData,
-                        name: target.value,
-                      });
-                    }}
-                    required
-                  />
-                   <Input
-                    variantItem={item}
-                    type="text"
-                    placeholder="Surname"
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                      const { target } = e;
-
-                      setFormData({
-                        ...formData,
-                        surname: target.value,
-                      });
-                    }}
-                    required
-                  />
-                   <Input
-                    variantItem={item}
-                    type="text"
-                    placeholder="Address"
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                      const { target } = e;
-
-                      setFormData({
-                        ...formData,
-                        address: target.value,
-                      });
-                    }}
-                    required
-                  />
-                     <Input
                     variantItem={item}
                     type="email"
                     placeholder="Email"
@@ -183,6 +160,21 @@ export default function Home() {
                     }}
                     required
                   />
+                  <Input
+                    variantItem={item}
+                    type="text"
+                    placeholder="Address"
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                      const { target } = e;
+
+                      setFormData({
+                        ...formData,
+                        address: target.value,
+                      });
+                    }}
+                    required
+                  />
+
                   <Input
                     variantItem={item}
                     type="password"
@@ -201,6 +193,9 @@ export default function Home() {
                   <div className="flex flex-col">
                     <motion.button
                       variants={item}
+                      onClick={() => {
+                        window.location.href = "/admin";
+                      }}
                       type="submit"
                       className="bg-lavender py-4 px-2 font-medium text-white rounded-xl hover:bg-lavender-500 transition ease-out duration-200"
                     >
@@ -217,8 +212,8 @@ export default function Home() {
               </>
             </>
           ) : (
-            <Spinner />
-          )}
+              <Spinner />
+            )}
         </motion.div>
       </main>
     </div>
