@@ -51,14 +51,25 @@ export default function Home() {
     }
   }
 
-  function handleForm(e: React.FormEvent) {
+  async function handleForm(e: React.FormEvent) {
     e.preventDefault()
 
-    toast({
-      title: "Test notification",
-      description: "I'm testing the notification system"
-    })
     console.log(formData)
+
+    const response = await fetch("http://localhost:3002/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    })
+
+    const data = await response.json()
+
+    toast({
+      title: data.type === "success" ? "Success" : "Error",
+      description: data.message,
+    });
   }
 
   function handleResetPassword() {

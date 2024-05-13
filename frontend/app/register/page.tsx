@@ -11,14 +11,23 @@ import Link from "@/components/custom/Link/Link";
 import Input from "@/components/custom/Input/Input";
 
 import { useToast } from "@/components/ui/use-toast";
+import { format } from "date-fns"
+import { cn } from "@/lib/utils"
+import { Calendar } from "@/components/ui/calendar"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+import { Button } from "@/components/ui/button"
 
 type FormProps = {
   name: string;
   surname: string;
   address: string;
   email: string;
+  birthdate: string;
   password: string;
-  persist?: boolean;
 };
 
 export default function Home() {
@@ -26,14 +35,15 @@ export default function Home() {
     name: "",
     surname: "",
     address: "",
+    birthdate: "",
     email: "",
     password: "",
-    persist: false,
   });
 
   const [darkMode, setDarkMode] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [isResetingPassword, setIsResetingPassword] = useState<boolean>(false);
+  const [date, setDate] = useState<Date>();
 
   const { toast } = useToast();
 
@@ -68,14 +78,23 @@ export default function Home() {
     },
   };
 
-  function handleForm(e: React.FormEvent) {
-    e.preventDefault();
+  async function handleForm(e: React.FormEvent) {
+    e.preventDefault()
+  
+    const response = await fetch("http://localhost:3002/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    })
+
+    const data = await response.json()
 
     toast({
-      title: "Test notification",
-      description: "I'm testing the notification system",
+      title: data.type === "success" ? "Success" : "Error",
+      description: data.message,
     });
-    console.log(formData);
   }
 
   return (
@@ -175,6 +194,40 @@ isResetingPassword && "flex flex-col justify-center"
                     required
                   />
 
+                  <motion.div variants={item} className="relative">
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant={"outline"}
+                          className={cn(
+                            "w-full h-[52px] hover:text-text flex items-center justify-start dark:bg-foregroundDark text-text dark:text-textBaseDark focus:text-lavender dark:focus:text-lavender outline-none p-3 rounded-xl border-solid border-2 focus:border-primary transition-all ease-out duration-300",
+                            !date && "text-muted-foreground"
+                          )}
+                        >
+                          {date ? format(date, "PPP") : <span className="text-muted-foreground/60 text-sm">Birthday</span>}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0">
+                        <Calendar
+                          mode="single"
+                          defaultMonth={new Date(2000, 10)}
+                          selected={date}
+                          disabled={(date) =>
+                            date > new Date() || date < new Date("1900-01-01")
+                          }
+                          onSelect={(date) => {
+                            setDate(date);
+                            setFormData({
+                              ...formData,
+                              birthdate: date?.toLocaleDateString()! 
+                            });
+                          }}
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  </motion.div>
+
                   <Input
                     variantItem={item}
                     type="password"
@@ -193,9 +246,6 @@ isResetingPassword && "flex flex-col justify-center"
                   <div className="flex flex-col">
                     <motion.button
                       variants={item}
-                      onClick={() => {
-                        window.location.href = "/admin";
-                      }}
                       type="submit"
                       className="bg-lavender py-4 px-2 font-medium text-white rounded-xl hover:bg-lavender-500 transition ease-out duration-200"
                     >
