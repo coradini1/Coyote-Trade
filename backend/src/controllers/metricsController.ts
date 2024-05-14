@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Request, Response } from "express"
 
 export async function metricsController(req: Request, res: Response) {
   /*
@@ -7,7 +7,7 @@ export async function metricsController(req: Request, res: Response) {
       FROM users
       WHERE dateOfCreation >= date("now", "-7 days")
       GROUP BY DATE(dateOfCreation)
-      ORDER BY DATE(dateOfCreation);
-    `;
+      ORDER BY DATE(dateOfCreation)
+    `
   */
 }

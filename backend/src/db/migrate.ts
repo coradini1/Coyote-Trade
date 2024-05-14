@@ -1,17 +1,17 @@
-import "dotenv/config";
-import { resolve } from "node:path";
-import { migrate } from "drizzle-orm/libsql/migrator";
-import { db } from "./db";
+import "dotenv/config"
+import { resolve } from "node:path"
+import { migrate } from "drizzle-orm/libsql/migrator"
+import { db } from "./db"
 
 (async () => {
   try {
-    await migrate(db, { migrationsFolder: resolve(__dirname, "../../migrations") });
-    console.log("Migration successful");
+    await migrate(db, { migrationsFolder: resolve(__dirname, "../../migrations") })
+    console.log("Migration successful")
 
-    process.exit(0);
+    process.exit(0)
   } catch (e) {
-    console.error(e);
+    console.error(e)
 
-    process.exit(1);
+    process.exit(1)
   }
-})();
+})()

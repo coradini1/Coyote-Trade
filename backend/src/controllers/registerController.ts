@@ -1,10 +1,10 @@
-import { Request, Response } from "express";
+import { Request, Response } from "express"
 
-import { usersTable } from "../db/schema";
-import { db } from "../db/db";
+import { usersTable } from "../db/schema"
+import { db } from "../db/db"
 
-import { RegisterBody } from "../types";
-import { generateToken, hashPassword } from "../utils/utils";
+import { RegisterBody } from "../types"
+import { generateToken, hashPassword } from "../utils/utils"
 
 export async function registerController(req: Request, res: Response) {
   const {
@@ -20,7 +20,7 @@ export async function registerController(req: Request, res: Response) {
     return res.status(400).json({
       type: "error",
       message: "Missing required fields",
-    });
+    })
   }
 
   const userCheck = await db.query.usersTable.findFirst({
@@ -31,11 +31,11 @@ export async function registerController(req: Request, res: Response) {
     return res.status(400).json({
       type: "error",
       message: "User already exists",
-    });
+    })
   }
 
   try {
-    const hashedPassword = await hashPassword(password);
+    const hashedPassword = await hashPassword(password)
 
     await db.insert(usersTable).values({
       name,
@@ -46,18 +46,18 @@ export async function registerController(req: Request, res: Response) {
       email,
     })
 
-    const token = generateToken(email, true);
+    const token = generateToken(email, true)
 
     res.status(201).json({
       type: "success",
       message: "You have successfully registered your account",
       token
-    });
+    })
   } catch (error) {
-    console.error(error);
+    console.error(error)
     res.status(400).json({
       type: "error",
       message: "User creation failed",
-    });
+    })
   }
 }
