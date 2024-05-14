@@ -41,9 +41,12 @@ export async function loginController(req: Request, res: Response) {
 
   const token = generateToken(email, persist)
 
+  res.cookie("token", token, {
+    httpOnly: true,
+    secure: true,
+  })
   res.status(200).json({
     type: "success",
     message: "You have successfully logged in",
-    token,
   })
 }

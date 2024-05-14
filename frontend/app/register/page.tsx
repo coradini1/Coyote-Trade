@@ -81,7 +81,7 @@ export default function Home() {
   async function handleForm(e: React.FormEvent) {
     e.preventDefault()
   
-    const response = await fetch("http://localhost:3002/register", {
+    const response = await fetch("http://localhost:3002/api/register", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

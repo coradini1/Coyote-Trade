@@ -56,20 +56,26 @@ export default function Home() {
 
     console.log(formData)
 
-    const response = await fetch("http://localhost:3002/login", {
+    const response = await fetch("http://localhost:3002/api/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(formData),
+      credentials: "include",
     })
 
     const data = await response.json()
+
+    // wrtie the jwt token to httpOnly cookie
+    document.cookie = `token=${data.token}; path=/;`
 
     toast({
       title: data.type === "success" ? "Success" : "Error",
       description: data.message,
     });
+
+    window.location.href = "/admin"
   }
 
   function handleResetPassword() {

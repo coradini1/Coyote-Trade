@@ -6,15 +6,23 @@ import { Rectangle, XAxis, YAxis, Tooltip, BarChart, Bar } from 'recharts'
 
 export default function Page() {
   const [data, setData] = useState<any>()
+  const [user, setUser] = useState<any>()
 
   useEffect(() => {
-    async function getData() {
-      const response = await fetch("http://localhost:3002/")
-      const usersData = await response.json()
-      setData(usersData)
+    async function fetchData() {
+      const response = await fetch('http://localhost:3002/api/dashboard', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        credentials: 'include'
+      })
+
+      const dataJson = await response.json()
+      setUser(dataJson.user)
     }
-    
-    getData()
+
+    fetchData()
   }, [])
 
   return (
@@ -47,7 +55,11 @@ export default function Page() {
                 </BarChart>
               </div>
             </>
-          ) : (<Spinner />)}
+          ) : (
+                <>
+                  <h1 className="text-textBase dark:text-textBaseDark">{user ? `Oi, ${user.name}` : "Welcome back"}</h1>
+                </>
+              )}
         </div>
       </div>
     </div>
