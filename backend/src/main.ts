@@ -16,7 +16,6 @@ app.use(cors({
 }))
 app.use(bodyParser.json())
 
-
 // Routes
 app.use("/api/register", register)
 app.use("/api/login", login)
