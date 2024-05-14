@@ -81,7 +81,7 @@ export default function Home() {
   async function handleForm(e: React.FormEvent) {
     e.preventDefault()
   
-    const response = await fetch("http://localhost:3002/api/register", {
+    const response = await fetch("https://aware-yettie-coyote-94d1da96.koyeb.app/api/register", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -95,6 +95,10 @@ export default function Home() {
       title: data.type === "success" ? "Success" : "Error",
       description: data.message,
     });
+
+    if (data.type === "success") {
+      window.location.href = "/login";
+    }
   }
 
   return (

@@ -56,7 +56,7 @@ export default function Home() {
 
     console.log(formData)
 
-    const response = await fetch("http://localhost:3002/api/login", {
+    const response = await fetch("https://aware-yettie-coyote-94d1da96.koyeb.app/api/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -67,7 +67,6 @@ export default function Home() {
 
     const data = await response.json()
 
-    // wrtie the jwt token to httpOnly cookie
     document.cookie = `token=${data.token}; path=/;`
 
     toast({
@@ -75,7 +74,9 @@ export default function Home() {
       description: data.message,
     });
 
-    window.location.href = "/admin"
+    if (data.type === "success") {
+      window.location.href = "/admin"
+    }
   }
 
   function handleResetPassword() {
