@@ -4,6 +4,6 @@ import { authenticateToken } from "../middleware/tokenMiddleware"
 
 const router = express.Router()
 
-router.get("/", authenticateToken ,dashboardController)
+router.get("/", authenticateToken, dashboardController)
 
 export default router
