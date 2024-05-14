@@ -15,7 +15,7 @@ const port = 3002
 // Middlewares
 app.use(cors({
   credentials: true,
-  origin: ["http://localhost:3000", "https://rsantos.dev"],
+  origin: "https://rsantos.dev",
 }))
 app.use(cookieParser());
 app.use(bodyParser.json())
