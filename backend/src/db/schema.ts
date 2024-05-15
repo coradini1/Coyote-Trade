@@ -9,8 +9,9 @@ export const usersTable = sqliteTable("users", {
   address: text("address").notNull(),
   password: text("password").notNull(),
   email: text("email").unique().notNull(),
-  role: text("role").default("user"),
-  createdAt: text("createdAt").default(sql`datetime('now')`),
+  role: text("role").default("user").notNull(),
+  createdAt: text("created_at").default(sql`(CURRENT_TIMESTAMP)`).notNull(),
+  updateAt: integer('updated_at', { mode: 'timestamp' }).$onUpdate(() => new Date()),
 })
 
 export type InsertUser = typeof usersTable.$inferInsert
