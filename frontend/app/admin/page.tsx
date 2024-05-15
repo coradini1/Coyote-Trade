@@ -10,7 +10,7 @@ export default function Page() {
 
   useEffect(() => {
     async function fetchData() {
-      const response = await fetch('https://aware-yettie-coyote-94d1da96.koyeb.app/api/dashboard', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/dashboard`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'

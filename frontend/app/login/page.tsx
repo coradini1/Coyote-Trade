@@ -56,7 +56,7 @@ export default function Home() {
 
     console.log(formData)
 
-    const response = await fetch("https://aware-yettie-coyote-94d1da96.koyeb.app/api/login", {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

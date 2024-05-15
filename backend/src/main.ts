@@ -1,3 +1,4 @@
+import "dotenv/config"
 import express, { Express } from "express"
 import cors from "cors"
 import bodyParser from "body-parser"
@@ -15,7 +16,7 @@ const port = 3002
 // Middlewares
 app.use(cors({
   credentials: true,
-  origin: "https://rsantos.dev",
+  origin: process.env.CLIENT_URL
 }))
 app.use(cookieParser());
 app.use(bodyParser.json())

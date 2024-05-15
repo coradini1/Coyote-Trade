@@ -81,7 +81,7 @@ export default function Home() {
   async function handleForm(e: React.FormEvent) {
     e.preventDefault()
   
-    const response = await fetch("https://aware-yettie-coyote-94d1da96.koyeb.app/api/register", {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/register`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

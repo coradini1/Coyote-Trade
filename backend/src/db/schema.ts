@@ -1,3 +1,4 @@
+import { sql } from "drizzle-orm"
 import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core"
 
 export const usersTable = sqliteTable("users", {
@@ -9,7 +10,7 @@ export const usersTable = sqliteTable("users", {
   password: text("password").notNull(),
   email: text("email").unique().notNull(),
   role: text("role").default("user"),
-  createdAt: text("createdAt").default(new Date().toLocaleDateString("en-GB"))
+  createdAt: text("createdAt").default(sql`datetime('now')`),
 })
 
 export type InsertUser = typeof usersTable.$inferInsert
