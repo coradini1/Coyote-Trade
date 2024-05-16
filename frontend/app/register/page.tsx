@@ -87,6 +87,7 @@ export default function Home() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(formData),
+      credentials: "include",
     })
 
     const data = await response.json()
@@ -97,7 +98,12 @@ export default function Home() {
     });
 
     if (data.type === "success") {
-      window.location.href = "/login";
+      setLoading(true);
+
+      setTimeout(() => {
+        setLoading(false);
+        window.location.href = "/admin";
+      }, 2000);
     }
   }
 

@@ -48,10 +48,13 @@ export async function registerController(req: Request, res: Response) {
 
     const token = generateToken(email, true)
 
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: true,
+    })
     res.status(201).json({
       type: "success",
       message: "You have successfully registered your account",
-      token
     })
   } catch (error) {
     console.error(error)
