@@ -11,7 +11,6 @@ export const usersTable = sqliteTable("users", {
   email: text("email").unique().notNull(),
   role: text("role").default("user").notNull(),
   createdAt: text("created_at").default(sql`(CURRENT_TIMESTAMP)`).notNull(),
-  updateAt: integer('updated_at', { mode: 'timestamp' }).$onUpdate(() => new Date()),
 })
 
 export type InsertUser = typeof usersTable.$inferInsert
