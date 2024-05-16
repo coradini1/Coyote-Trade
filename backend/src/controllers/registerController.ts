@@ -55,9 +55,11 @@ export async function registerController(req: Request, res: Response) {
     })
   } catch (error) {
     console.error(error)
+    console.log(error)
     res.status(400).json({
       type: "error",
       message: "User creation failed",
+      error,
     })
   }
 }
