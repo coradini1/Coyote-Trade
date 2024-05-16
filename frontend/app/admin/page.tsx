@@ -18,8 +18,18 @@ export default function Page() {
         credentials: 'include'
       })
 
+      const metrics = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/metrics`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        credentials: 'include'
+      })
+
+      const metricsJson = await metrics.json()
       const dataJson = await response.json()
       setUser(dataJson.user)
+      setData(metricsJson)
     }
 
     fetchData()
@@ -31,10 +41,10 @@ export default function Page() {
         <div className="relative flex flex-col justify-center gap-20 items-center bg-white dark:bg-foregroundDark min-w-[450px] min-h-[548px] py-8 px-12 border-lavender border-solid border-2 rounded-xl shadow-xl transition-colors ease-out duration-300">
           {data ? (
             <>
-              <h1 className="font-bold text-textBase dark:text-textBaseDark text-3xl mb-5">New user sign ups in the last week</h1>
+              <h1 className="font-bold text-textBase dark:text-textBaseDark text-3xl mb-5">Oi {user?.name}, veja as contas criadas nos ultimos 7 dias</h1>
               <div className="mr-2">
                 <BarChart
-                  width={750}
+                  width={1050}
                   height={300}
                   data={data}
                 >
@@ -57,7 +67,7 @@ export default function Page() {
             </>
           ) : (
                 <>
-                  <h1 className="text-textBase dark:text-textBaseDark">{user ? `Oi, ${user.name}` : "Welcome back"}</h1>
+                  <h1 className="text-textBase dark:text-textBaseDark">{user?.name}</h1>
                 </>
               )}
         </div>

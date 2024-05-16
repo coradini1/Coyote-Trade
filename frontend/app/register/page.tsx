@@ -42,7 +42,6 @@ export default function Home() {
 
   const [darkMode, setDarkMode] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
-  const [isResetingPassword, setIsResetingPassword] = useState<boolean>(false);
   const [date, setDate] = useState<Date>();
 
   const { toast } = useToast();
@@ -80,7 +79,8 @@ export default function Home() {
 
   async function handleForm(e: React.FormEvent) {
     e.preventDefault()
-  
+    setLoading(true);
+
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/register`, {
       method: "POST",
       headers: {
@@ -98,12 +98,10 @@ export default function Home() {
     });
 
     if (data.type === "success") {
-      setLoading(true);
-
       setTimeout(() => {
         setLoading(false);
         window.location.href = "/admin";
-      }, 2000);
+      }, 1000);
     }
   }
 
@@ -115,9 +113,7 @@ export default function Home() {
           initial="hidden"
           animate="visible"
           variants={container}
-          className={`${
-isResetingPassword && "flex flex-col justify-center"
-} relative bg-white dark:bg-foregroundDark w-[450px] min-h-[548px] py-8 px-12 border-lavender border-solid border-2 rounded-xl shadow-xl transition-colors ease-out duration-300`}
+          className={`relative bg-white dark:bg-foregroundDark w-[450px] min-h-[548px] py-8 px-12 border-lavender border-solid border-2 rounded-xl shadow-xl transition-colors ease-out duration-300`}
         >
           <button
             className="absolute top-4 right-4 w-10 flex flex-col items-center bg-lavender text-white py-2 px-4 rounded-full"
@@ -132,7 +128,6 @@ isResetingPassword && "flex flex-col justify-center"
                 <IoMdMoon className="text-2xl" />
               )}
           </button>
-          {!loading ? (
             <>
               <>
                 <motion.h1
@@ -256,10 +251,11 @@ isResetingPassword && "flex flex-col justify-center"
                   <div className="flex flex-col">
                     <motion.button
                       variants={item}
+                      disabled={loading}
                       type="submit"
-                      className="bg-lavender py-4 px-2 font-medium text-white rounded-xl hover:bg-lavender-500 transition ease-out duration-200"
+                      className="disabled:bg-gray-400 bg-lavender flex flex-col items-center justify-center max-h-[56px] py-4 px-2 font-medium text-white rounded-xl hover:bg-lavender-500 transition ease-out duration-200"
                     >
-                      Register
+                      {loading ? <Spinner /> : "Sign up"}
                     </motion.button>
                     <motion.p
                       variants={item}
@@ -271,9 +267,6 @@ isResetingPassword && "flex flex-col justify-center"
                 </form>
               </>
             </>
-          ) : (
-              <Spinner />
-            )}
         </motion.div>
       </main>
     </div>
@@ -285,7 +278,7 @@ const Spinner = () => {
     <div className="flex justify-center items-center" role="status">
       <svg
         aria-hidden="true"
-        className="spinner w-11 h-11 text-gray-200 animate-spin dark:text-gray-600 fill-lavender"
+        className="spinner w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-lavender"
         viewBox="0 0 100 101"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"

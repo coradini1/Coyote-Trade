@@ -9,7 +9,7 @@ const poppins = Poppins({
 
 export const metadata: Metadata = {
   title: "CoyoteTrade",
-  description: "Va ti cata rapaz",
+  description: "A melhor plataforma de trade do Brasil",
 };
 
 export default function RootLayout({
