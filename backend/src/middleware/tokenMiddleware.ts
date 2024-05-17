@@ -21,7 +21,7 @@ export function authenticateToken(req: any, res: any, next: any) {
 }
 
 export function checkAuthenticated(req:any, res: any, next: any) {
-  const token = req.cookies.token;
+  const token = req.cookies.token
   if (token) {
     return res.json({
       type: "error",

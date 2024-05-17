@@ -18,7 +18,7 @@ export default function Page() {
         credentials: 'include'
       })
 
-      const metrics = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/metrics`, {
+      const metrics = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/metrics/trends`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'

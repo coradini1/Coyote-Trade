@@ -18,7 +18,7 @@ app.use(cors({
   credentials: true,
   origin: ["http://localhost:3000", process.env.CLIENT_URL!]
 }))
-app.use(cookieParser());
+app.use(cookieParser())
 app.use(bodyParser.json())
 
 // Routes

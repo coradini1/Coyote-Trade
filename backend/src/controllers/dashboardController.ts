@@ -26,7 +26,6 @@ export async function dashboardController(req: any, res: Response) {
 
   res.status(200).json({
     type: "success",
-    message: "You have successfully accessed the dashboard",
     user: {
       email,
       name,
