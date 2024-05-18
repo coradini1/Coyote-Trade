@@ -2,7 +2,7 @@ import { Request, Response } from "express"
 
 import { db } from "../db/db"
 
-export async function dashboardController(req: any, res: Response) {
+export async function adminDashboardController(req: any, res: Response) {
   const userData = await db.query.usersTable.findFirst({
     where: (user, { eq }) => eq(user.email, req.user.email),
   })
