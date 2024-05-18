@@ -8,7 +8,7 @@ import login from "./routes/login"
 import register from "./routes/register"
 import adminDashboard from "./routes/adminDashboard"
 import metrics from "./routes/metrics"
-
+import meRoute from "./routes/me"
 // Server
 const app: Express = express()
 const port = 3002
@@ -26,6 +26,8 @@ app.use("/api/register", register)
 app.use("/api/login", login)
 app.use("/api/admin-dashboard", adminDashboard)
 app.use("/api/metrics", metrics)
+app.use("/api/me", meRoute )
+
 
 app.listen(port, () => {
   console.log(`CoyoteTrade-API running at http://localhost:${port}`)

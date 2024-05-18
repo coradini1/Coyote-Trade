@@ -1,8 +1,10 @@
-import React from "react"
-
-
+"use client"
+import React from "react";
+import UserCard from "@/components/custom/UserCard/UserCard";
 export default function Page() {
   return (
-    <h1>oi</h1>
-  )
+    <div>
+      <UserCard />
+    </div>
+  );
 }
