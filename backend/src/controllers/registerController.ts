@@ -46,7 +46,7 @@ export async function registerController(req: Request, res: Response) {
       email,
     })
 
-    const token = generateToken(email, true)
+    const token = generateToken(email)
 
     res.cookie("token", token, {
       httpOnly: true,

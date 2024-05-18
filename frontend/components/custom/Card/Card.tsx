@@ -3,6 +3,7 @@ import { motion } from "framer-motion"
 
 interface CardProps {
   isCentered?: boolean;
+  fitContent?: boolean;
   children: React.ReactNode;
 }
 
@@ -19,9 +20,9 @@ const container = {
     }
   }
 
-function Card({ isCentered, children }: CardProps) {
+function Card({ isCentered, fitContent, children }: CardProps) {
   return (
-    <motion.div initial="hidden" animate="visible" variants={container} className={`${isCentered && "flex flex-col justify-center"} relative bg-white dark:bg-foregroundDark w-[450px] min-h-[548px] py-8 px-12 border-lavender border-solid border-2 rounded-xl shadow-xl transition-colors ease-out duration-300`}>
+    <motion.div initial="hidden" animate="visible" variants={container} className={`${isCentered && "flex flex-col justify-center"} relative bg-white dark:bg-foregroundDark ${!fitContent ? "w-[450px] min-h-[548px]" : "w-fit h-fit" } py-8 px-12 border-lavender border-solid border-2 rounded-xl shadow-xl transition-colors ease-out duration-300`}>
       {children}
     </motion.div>
   )

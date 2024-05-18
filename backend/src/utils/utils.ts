@@ -10,8 +10,8 @@ export function comparePasswords(password: string, hashedPassword: string): Prom
   return bcrypt.compare(password, hashedPassword)
 }
 
-export function generateToken(email: string, persist: boolean): string {
-  return jwt.sign({ email }, process.env.JWT_SECRET!, { expiresIn: persist ? "1y" : "1d" })
+export function generateToken(email: string, persist?: boolean): string {
+  return jwt.sign({ email }, process.env.JWT_SECRET!, { expiresIn: persist ? "1y" : "15m" })
 }
 
 export function verifyToken(token: string): Promise<string | object> {

@@ -2,10 +2,6 @@ import "dotenv/config"
 import jwt from "jsonwebtoken"
 
 export function authenticateToken(req: any, res: any, next: any) {
-  console.log("user token", req.cookies?.token)
-  console.log("user", req.user)
-  console.log("cookies", req.cookies)
-
   const token = req.cookies?.token
   if (!token) {
     return res.status(401).json({ message: "Access token not found" })

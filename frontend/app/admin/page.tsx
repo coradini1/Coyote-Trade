@@ -1,12 +1,14 @@
 "use client"
-import Spinner from "@/components/custom/Spinner/Spinner"
 import React, { useEffect, useState } from "react"
 
-import { Rectangle, XAxis, YAxis, Tooltip, BarChart, Bar } from 'recharts'
+import BarGraph from "@/components/custom/Graphs/BarGraph/BarGraph"
+import Table from "@/components/custom/Table/Table"
+import { TbUsers } from "react-icons/tb"
 
 export default function Page() {
   const [data, setData] = useState<any>()
   const [user, setUser] = useState<any>()
+  const [users, setUsers] = useState<any>()
 
   useEffect(() => {
     async function fetchData() {
@@ -26,9 +28,24 @@ export default function Page() {
         credentials: 'include'
       })
 
+      const userMetrics = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/metrics/users?page=1&limit=5`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        credentials: 'include'
+      })
+
       const metricsJson = await metrics.json()
+      const userMetricsJson = await userMetrics.json()
       const dataJson = await response.json()
+
+      if (dataJson?.user?.role !== "admin" || !dataJson) {
+        return window.location.href = "/login"
+      }
+
       setUser(dataJson.user)
+      setUsers(userMetricsJson)
       setData(metricsJson)
     }
 
@@ -37,40 +54,44 @@ export default function Page() {
 
   return (
     <div className="dark">
-      <div className="w-screen h-screen bg-base dark:bg-baseDark flex flex-col items-center justify-center">
-        <div className="relative flex flex-col justify-center gap-20 items-center bg-white dark:bg-foregroundDark min-w-[450px] min-h-[548px] py-8 px-12 border-lavender border-solid border-2 rounded-xl shadow-xl transition-colors ease-out duration-300">
-          {data ? (
-            <>
-              <h1 className="font-bold text-textBase dark:text-textBaseDark text-3xl mb-5">Oi {user?.name}, veja as contas criadas nos ultimos 7 dias</h1>
-              <div className="mr-2">
-                <BarChart
-                  width={1050}
-                  height={300}
-                  data={data}
-                >
-                  <Bar dataKey="users_gain"
-                    className="rounded-xl"
-                    background={<Rectangle fill="#cdd6f4" fillOpacity={0.1} radius={[10, 10, 0, 0]} />}
-                    barSize={30} width={10}
-                    radius={[10, 10, 0, 0]}
-                    stroke="#7287fd"
-                    activeBar={<Rectangle fillOpacity={0.3} />}
-                    strokeWidth={1}
-                    fillOpacity={1}
-                    fill="#7287fd"
-                  />
-                  <XAxis tickLine={false} stroke="#cdd6f4" dataKey="date" />
-                  <YAxis tickLine={false} stroke="#cdd6f4"  />
-                  <Tooltip cursor={{fill: 'none'}} />
-                </BarChart>
+      <div className="dark:bg-baseDark bg-base h-screen flex flex-col">
+        {data ? (
+          <>
+            <div className="flex gap-3">
+              <div className="bg-white dark:bg-foregroundDark w-4/12 p-4 flex flex-col ml-3 mb-3 mt-3 items-center justify-center rounded-lg border-solid border-2 border-lavender">
+                <div className="flex w-full justify-between mt-3 mb-8">
+                  <h3 className="text-textBase dark:text-textBaseDark flex text-xl justify-center items-center gap-2">
+                    <TbUsers size={28} className="text-lavender" /> Users
+                  </h3>
+                  <p className="text-textBase dark:text-textBaseDark">Last 7 days</p>
+                </div>
+                <BarGraph width="100%" height={250} data={data} />
               </div>
+
+
+              <div className="bg-white dark:bg-foregroundDark w-8/12 flex flex-col mb-3 mt-3 mr-3 items-center justify-center rounded-lg border-solid border-2 border-lavender">
+                <h1 className="dark:text-textBaseDark">Tem que terminar mds</h1>
+              </div> 
+            </div>
+
+            <div className="bg-white overflow-scroll dark:bg-foregroundDark p-4 flex flex-col mb-3 mx-3 items-center justify-center rounded-lg border-solid border-2 border-lavender">
+              <Table
+                columns={[
+                  "Full Name",
+                  "Email",
+                  "Address",
+                  "Role",
+                  "Created At",
+                ]}
+                rows={users}
+              />
+            </div>
+          </>
+        ) : (
+            <>
+              <h1 className="text-textBase dark:text-textBaseDark">{user?.name}</h1>
             </>
-          ) : (
-                <>
-                  <h1 className="text-textBase dark:text-textBaseDark">{user?.name}</h1>
-                </>
-              )}
-        </div>
+          )}
       </div>
     </div>
   )
