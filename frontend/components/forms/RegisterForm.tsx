@@ -107,25 +107,25 @@ function RegisterForm() {
 
   return (
     <div className={darkMode ? "dark" : ""}>
-      <main className="bg-base dark:bg-baseDark h-screen w-screen flex flex-col items-center justify-center transition-colors ease-out duration-300">
+      <main className="flex h-screen w-screen flex-col items-center justify-center bg-base transition-colors duration-300 ease-out dark:bg-baseDark">
         <Toaster />
         <motion.div
           initial="hidden"
           animate="visible"
           variants={container}
-          className={`relative bg-white dark:bg-foregroundDark w-[450px] min-h-[548px] py-8 px-12 border-lavender border-solid border-2 rounded-xl shadow-xl transition-colors ease-out duration-300`}
+          className={`relative min-h-[548px] w-[450px] rounded-xl border-2 border-solid border-lavender bg-white px-12 py-8 shadow-xl transition-colors duration-300 ease-out dark:bg-foregroundDark`}
         >
           <DarkModeButton />  
           <>
             <motion.h1
               variants={item}
-              className="font-bold text-textBase dark:text-textBaseDark text-2xl text-center mt-20 transition-colors ease-out duration-300"
+              className="mt-20 text-center text-2xl font-bold text-textBase transition-colors duration-300 ease-out dark:text-textBaseDark"
             >
               Create your account
             </motion.h1>
             <form
               onSubmit={(e: React.FormEvent) => handleForm(e)}
-              className="flex flex-col gap-6 mt-10"
+              className="mt-10 flex flex-col gap-6"
             >
               <div className="flex flex-row items-center justify-center gap-2">
                 <Input
@@ -192,11 +192,11 @@ function RegisterForm() {
                     <BdButton
                       variant={"outline"}
                       className={cn(
-                        "w-full h-[52px] hover:text-text flex items-center justify-start dark:bg-foregroundDark text-text dark:text-textBaseDark focus:text-lavender dark:focus:text-lavender outline-none p-3 rounded-xl border-solid border-2 focus:border-primary transition-all ease-out duration-300",
+                        "flex h-[52px] w-full items-center justify-start rounded-xl border-2 border-solid p-3 text-text outline-none transition-all duration-300 ease-out hover:text-text focus:border-primary focus:text-lavender dark:bg-foregroundDark dark:text-textBaseDark dark:focus:text-lavender",
                         !date && "text-muted-foreground"
                       )}
                     >
-                      {date ? format(date, "PPP") : <span className="text-muted-foreground/60 text-sm">Birthday</span>}
+                      {date ? format(date, "PPP") : <span className="text-sm text-muted-foreground/60">Birthday</span>}
                     </BdButton>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0">
@@ -249,7 +249,7 @@ function RegisterForm() {
                 </motion.div>
                 <motion.p
                   variants={item}
-                  className="text-xs text-textBase dark:text-textBaseDark text-center mt-4 transition-colors ease-out duration-300"
+                  className="mt-4 text-center text-xs text-textBase transition-colors duration-300 ease-out dark:text-textBaseDark"
                 >
                   Already have an account? <Link href="/login" text="Log in" />
                 </motion.p>

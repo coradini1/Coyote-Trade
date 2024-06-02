@@ -8,11 +8,11 @@ interface BackButtonProps {
 function BackButton({ action }: BackButtonProps) {
   return (
     <button
-      className="absolute top-4 left-4 w-fit flex flex-col items-center py-2 px-4"
+      className="absolute left-4 top-4 flex w-fit flex-col items-center px-4 py-2"
       onClick={action}
     >
       <span 
-        className="flex flex-row gap-3 hover:gap-2 transition-all ease-out duration-300 text-text dark:text-textBaseDark"
+        className="flex flex-row gap-3 text-text transition-all duration-300 ease-out hover:gap-2 dark:text-textBaseDark"
       >
         <IoMdArrowBack className="text-2xl" /> <p>Back</p>
       </span>

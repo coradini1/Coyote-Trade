@@ -1,5 +1,5 @@
 "use client"
-import React, { useState, useEffect } from "react"
+import React, { useState } from "react"
 
 import {
   Table as TableComponent,
@@ -19,7 +19,7 @@ import {
 import { IoIosMore } from "react-icons/io"
 
 function Table({ columns, rows }: any) {
-  const [tableRows, setTableRows] = React.useState<any>(rows)
+  const [tableRows, setTableRows] = useState<any>(rows)
 
   function handleCloseAccount(userEmail: string) {
     fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/user/delete`, {
@@ -70,7 +70,7 @@ function Table({ columns, rows }: any) {
 function Dropdown({ userEmail, handleCloseAccount }: { userEmail: string, handleCloseAccount: (email: string) => void } ) {
   return (
     <DropdownMenu >
-      <DropdownMenuTrigger className="focus:outline-none text-textBase dark:text-textBaseDark hover:bg-black/5 dark:hover:bg-black/20 p-1 rounded-sm">
+      <DropdownMenuTrigger className="rounded-sm p-1 text-textBase hover:bg-black/5 focus:outline-none dark:text-textBaseDark dark:hover:bg-black/20">
         <IoIosMore size={23} />
       </DropdownMenuTrigger>
       <DropdownMenuContent>
@@ -78,7 +78,7 @@ function Dropdown({ userEmail, handleCloseAccount }: { userEmail: string, handle
         <DropdownMenuItem onClick={
           () => handleCloseAccount(userEmail)
         }>
-          <p className="text-red-500 cursor-pointer">
+          <p className="cursor-pointer text-red-500">
             Close account
           </p>
         </DropdownMenuItem>

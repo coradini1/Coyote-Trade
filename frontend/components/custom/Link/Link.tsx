@@ -12,8 +12,8 @@ function Link({ href, text, onClick, ...props }: LinkProps) {
       {...props}
       onClick={onClick}
       href={href}
-      className="relative text-lavender-400 text-xs after:content-[''] after:absolute after:w-0 after:h-[2px]
-                after:bottom-0 after:left-0 after:bg-lavender after:transition-all after:duration-300 after:ease-out
+      className="relative text-xs text-lavender-400 after:absolute after:bottom-0 after:left-0 after:h-[2px]
+                after:w-0 after:bg-lavender after:transition-all after:duration-300 after:ease-out after:content-['']
                 hover:after:w-full hover:after:transition-all hover:after:duration-300 hover:after:ease-out"
     >
       {text}

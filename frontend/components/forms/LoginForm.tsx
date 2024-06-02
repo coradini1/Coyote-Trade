@@ -50,7 +50,7 @@ function LoginForm({ item }: any) {
     }
   }
   return (
-    <form onSubmit={(e: React.FormEvent) => handleForm(e)}  className="flex flex-col gap-6 mt-10">
+    <form onSubmit={(e: React.FormEvent) => handleForm(e)}  className="mt-10 flex flex-col gap-6">
       <Input 
         variantItem={item}
         type="email"
@@ -80,13 +80,13 @@ function LoginForm({ item }: any) {
         required
       />
 
-      <motion.div variants={item} className="flex flex-row justify-between items-center gap-2 mb-12">
+      <motion.div variants={item} className="mb-12 flex flex-row items-center justify-between gap-2">
         <div className="flex flex-row items-center gap-1">
           <Checkbox
             id="remember-password"
             onCheckedChange={(e: boolean) => setFormData({...formData, persist: e})}
           />
-          <Label htmlFor="remember-password" className="text-xs dark:text-textBaseDark transition-colors ease-out duration-300">Remember</Label>
+          <Label htmlFor="remember-password" className="text-xs transition-colors duration-300 ease-out dark:text-textBaseDark">Remember</Label>
         </div>
       </motion.div>
 
@@ -98,7 +98,7 @@ function LoginForm({ item }: any) {
             Login 
           </Button>
         </motion.div>
-        <motion.p variants={item} className="text-xs text-textBase dark:text-textBaseDark text-center mt-4 transition-colors ease-out duration-300">
+        <motion.p variants={item} className="mt-4 text-center text-xs text-textBase transition-colors duration-300 ease-out dark:text-textBaseDark">
           New here? <Link href="/register" text="Create an account" />
         </motion.p>
       </div>

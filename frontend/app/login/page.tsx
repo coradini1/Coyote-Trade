@@ -15,11 +15,11 @@ export default function Home() {
   }
 
   return (
-    <main className="bg-base dark:bg-baseDark h-screen w-screen flex flex-col items-center justify-center transition-colors ease-out duration-300">
+    <main className="flex h-screen w-screen flex-col items-center justify-center bg-base transition-colors duration-300 ease-out dark:bg-baseDark">
       <Card>
         <DarkModeButton />
         <MotionDiv item={item}>
-          <h1 className="font-bold text-textBase dark:text-textBaseDark text-2xl text-center mt-20 transition-colors ease-out duration-300">Access your account</h1>
+          <h1 className="mt-20 text-center text-2xl font-bold text-textBase transition-colors duration-300 ease-out dark:text-textBaseDark">Access your account</h1>
         </MotionDiv>
         <LoginForm item={item} /> 
       </Card>

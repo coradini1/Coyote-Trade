@@ -13,7 +13,7 @@ function DarkModeButton() {
 
   return (
     <button 
-      className="absolute top-4 right-4 w-10 flex flex-col items-center bg-lavender text-white py-2 px-4 rounded-full"
+      className="absolute right-4 top-4 flex w-10 flex-col items-center rounded-full bg-lavender px-4 py-2 text-white"
       onClick={handleDarkMode}
     >
       {!isDarkMode ? (<MdSunny className="text-2xl" />) : (<IoMdMoon className="text-2xl" />)}

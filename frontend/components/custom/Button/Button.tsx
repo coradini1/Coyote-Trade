@@ -16,7 +16,7 @@ function Button({type, isLoading, isDisabled, onClick, children}: ButtonProps) {
       disabled={isDisabled}
       type={type}
       onClick={onClick}
-      className="w-full bg-lavender py-4 px-2 font-medium text-white rounded-xl hover:bg-lavender-500 transition ease-out duration-200"
+      className="w-full rounded-xl bg-lavender px-2 py-4 font-medium text-white transition duration-200 ease-out hover:bg-lavender-500"
     >
       {isLoading ? <Spinner /> : children}
     </button>

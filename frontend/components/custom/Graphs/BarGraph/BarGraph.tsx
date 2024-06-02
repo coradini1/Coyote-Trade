@@ -45,7 +45,7 @@ function BarGraph({ data, width, height }: any) {
               const dateObj = new Date(label)
               label = dateObj.toLocaleDateString('en-GB')
               return (
-                <div className="bg-white dark:bg-foregroundDark text-textBase dark:text-textBaseDark p-4 rounded-xl shadow-lg">
+                <div className="rounded-xl bg-white p-4 text-textBase shadow-lg dark:bg-foregroundDark dark:text-textBaseDark">
                   <p>{`Date: ${label}`}</p>
                   <p>{`New users: ${payload[0].value}`}</p>
                 </div>
