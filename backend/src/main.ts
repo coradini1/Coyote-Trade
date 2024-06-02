@@ -6,7 +6,7 @@ import cookieParser from "cookie-parser"
 
 import login from "./routes/login"
 import register from "./routes/register"
-import dashboard from "./routes/dashboard"
+import user from "./routes/user"
 import metrics from "./routes/metrics"
 
 // Server
@@ -24,7 +24,7 @@ app.use(bodyParser.json())
 // Routes
 app.use("/api/register", register)
 app.use("/api/login", login)
-app.use("/api/dashboard", dashboard)
+app.use("/api/user", user)
 app.use("/api/metrics", metrics)
 
 app.listen(port, () => {

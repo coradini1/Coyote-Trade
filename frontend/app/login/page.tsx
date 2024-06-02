@@ -54,8 +54,6 @@ export default function Home() {
   async function handleForm(e: React.FormEvent) {
     e.preventDefault()
 
-    console.log(formData)
-
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/login`, {
       method: "POST",
       headers: {

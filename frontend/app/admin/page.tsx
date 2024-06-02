@@ -12,7 +12,7 @@ export default function Page() {
 
   useEffect(() => {
     async function fetchData() {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/dashboard`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/user`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'
@@ -38,13 +38,13 @@ export default function Page() {
 
       const metricsJson = await metrics.json()
       const userMetricsJson = await userMetrics.json()
-      const dataJson = await response.json()
+      const userData = await response.json()
 
-      if (dataJson?.user?.role !== "admin" || !dataJson) {
+      if (userData?.user?.role !== "admin" || !userData) {
         return window.location.href = "/login"
       }
 
-      setUser(dataJson.user)
+      setUser(userData.user)
       setUsers(userMetricsJson)
       setData(metricsJson)
     }
@@ -53,11 +53,11 @@ export default function Page() {
   }, [])
 
   return (
-    <div className="dark">
+    <div>
       <div className="dark:bg-baseDark bg-base h-screen flex flex-col">
         {data ? (
           <>
-            <div className="flex gap-3">
+            <div className="flex flex-col gap-3 md:flex-row md:w-full">
               <div className="bg-white dark:bg-foregroundDark w-4/12 p-4 flex flex-col ml-3 mb-3 mt-3 items-center justify-center rounded-lg border-solid border-2 border-lavender">
                 <div className="flex w-full justify-between mt-3 mb-8">
                   <h3 className="text-textBase dark:text-textBaseDark flex text-xl justify-center items-center gap-2">
@@ -70,7 +70,7 @@ export default function Page() {
 
 
               <div className="bg-white dark:bg-foregroundDark w-8/12 flex flex-col mb-3 mt-3 mr-3 items-center justify-center rounded-lg border-solid border-2 border-lavender">
-                <h1 className="dark:text-textBaseDark">Tem que terminar mds</h1>
+                <h1 className="dark:text-textBaseDark">Mais data depois</h1>
               </div> 
             </div>
 

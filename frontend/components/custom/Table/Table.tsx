@@ -1,4 +1,5 @@
-import React from "react"
+"use client"
+import React, { useState, useEffect } from "react"
 
 import {
   Table as TableComponent,
@@ -18,6 +19,27 @@ import {
 import { IoIosMore } from "react-icons/io"
 
 function Table({ columns, rows }: any) {
+  const [tableRows, setTableRows] = React.useState<any>(rows)
+
+  function handleCloseAccount(userEmail: string) {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/user/delete`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        user: {
+          email: userEmail
+        }
+      }),
+      credentials: 'include'
+    }).then(() => {
+        setTableRows({
+          data: tableRows?.data.filter((row: any) => row.email !== userEmail)
+        })
+      })
+  }
+
   return (
     <TableComponent>
       <TableHeader>
@@ -28,7 +50,7 @@ function Table({ columns, rows }: any) {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {rows?.data.map((userData: any) => (
+        {tableRows?.data.map((userData: any) => (
           <TableRow key={userData.id}>
             <TableCell className="font-medium">{userData.name} {userData.surname}</TableCell>
             <TableCell>{userData.email}</TableCell>
@@ -36,7 +58,7 @@ function Table({ columns, rows }: any) {
             <TableCell>{userData.role}</TableCell>
             <TableCell className="text-right">{new Date(userData.createdAt).toLocaleDateString("en-GB")}</TableCell>
             <TableCell>
-              <Dropdown />
+              <Dropdown userEmail={userData.email} handleCloseAccount={handleCloseAccount} />
             </TableCell>
           </TableRow>
         ))}
@@ -45,16 +67,18 @@ function Table({ columns, rows }: any) {
   )
 }
 
-function Dropdown() {
+function Dropdown({ userEmail, handleCloseAccount }: { userEmail: string, handleCloseAccount: (email: string) => void } ) {
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger className="text-textBase dark:text-textBaseDark hover:bg-black/5 dark:hover:bg-black/20 p-1 rounded-sm">
+    <DropdownMenu >
+      <DropdownMenuTrigger className="focus:outline-none text-textBase dark:text-textBaseDark hover:bg-black/5 dark:hover:bg-black/20 p-1 rounded-sm">
         <IoIosMore size={23} />
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuItem>View details</DropdownMenuItem>
-        <DropdownMenuItem>
-          <p className="text-red-500">
+        <DropdownMenuItem onClick={
+          () => handleCloseAccount(userEmail)
+        }>
+          <p className="text-red-500 cursor-pointer">
             Close account
           </p>
         </DropdownMenuItem>
