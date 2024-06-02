@@ -20,6 +20,12 @@ export default function Page() {
         credentials: 'include'
       })
 
+      const userData = await response.json()
+
+      if (userData?.user?.role !== "admin" || !userData) {
+        return window.location.href = "/login"
+      }
+
       const metrics = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/metrics/trends`, {
         method: 'GET',
         headers: {
@@ -38,11 +44,6 @@ export default function Page() {
 
       const metricsJson = await metrics.json()
       const userMetricsJson = await userMetrics.json()
-      const userData = await response.json()
-
-      if (userData?.user?.role !== "admin" || !userData) {
-        return window.location.href = "/login"
-      }
 
       setUser(userData.user)
       setUsers(userMetricsJson)
@@ -54,13 +55,13 @@ export default function Page() {
 
   return (
     <div>
-      <div className="dark:bg-baseDark bg-base h-screen flex flex-col">
+      <div className="flex h-screen flex-col bg-base dark:bg-baseDark">
         {data ? (
           <>
-            <div className="flex flex-col gap-3 md:flex-row md:w-full">
-              <div className="bg-white dark:bg-foregroundDark w-5/12 p-4 flex flex-col ml-3 mb-3 mt-3 items-center justify-center rounded-lg border-solid border-2 border-lavender">
-                <div className="flex w-full justify-between mt-3 mb-8">
-                  <h3 className="text-textBase dark:text-textBaseDark flex text-xl justify-center items-center gap-2">
+            <div className="flex flex-col gap-3 md:w-full md:flex-row">
+              <div className="mb-3 ml-3 mt-3 flex w-5/12 flex-col items-center justify-center rounded-lg border-2 border-solid border-lavender bg-white p-4 dark:bg-foregroundDark">
+                <div className="mb-8 mt-3 flex w-full justify-between">
+                  <h3 className="flex items-center justify-center gap-2 text-xl text-textBase dark:text-textBaseDark">
                     <TbUsers size={28} className="text-lavender" /> Users
                   </h3>
                   <p className="text-textBase dark:text-textBaseDark">Last 7 days</p>
@@ -69,12 +70,24 @@ export default function Page() {
               </div>
 
 
-              <div className="bg-white dark:bg-foregroundDark w-8/12 flex flex-col mb-3 mt-3 mr-3 items-center justify-center rounded-lg border-solid border-2 border-lavender">
-                <h1 className="dark:text-textBaseDark">Mais data depois</h1>
+              <div className="mb-3 mr-3 mt-3 flex w-8/12 flex-col items-center justify-center rounded-lg border-2 border-solid border-lavender bg-white dark:bg-foregroundDark">
+                <h1 onClick={
+                  () => {
+                    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/user/logout`, {
+                      method: 'GET',
+                      headers: {
+                        'Content-Type': 'application/json'
+                      },
+                      credentials: 'include'
+                    }).then(() => {
+                      window.location.href = "/login"
+                    })
+                  }
+                } className="cursor-pointer rounded-md border-2 border-solid border-red-700 px-6 py-3 font-medium text-red-700 transition-all duration-200 ease-out hover:bg-red-700 hover:text-white dark:text-textBaseDark">Log out</h1>
               </div> 
             </div>
 
-            <div className="bg-white overflow-scroll dark:bg-foregroundDark p-4 flex flex-col mb-3 mx-3 items-center justify-center rounded-lg border-solid border-2 border-lavender">
+            <div className="mx-3 mb-3 flex flex-col items-center justify-center overflow-scroll rounded-lg border-2 border-solid border-lavender bg-white p-4 dark:bg-foregroundDark">
               <Table
                 columns={[
                   "Full Name",
