@@ -58,7 +58,7 @@ export default function Page() {
         {data ? (
           <>
             <div className="flex flex-col gap-3 md:flex-row md:w-full">
-              <div className="bg-white dark:bg-foregroundDark w-4/12 p-4 flex flex-col ml-3 mb-3 mt-3 items-center justify-center rounded-lg border-solid border-2 border-lavender">
+              <div className="bg-white dark:bg-foregroundDark w-5/12 p-4 flex flex-col ml-3 mb-3 mt-3 items-center justify-center rounded-lg border-solid border-2 border-lavender">
                 <div className="flex w-full justify-between mt-3 mb-8">
                   <h3 className="text-textBase dark:text-textBaseDark flex text-xl justify-center items-center gap-2">
                     <TbUsers size={28} className="text-lavender" /> Users

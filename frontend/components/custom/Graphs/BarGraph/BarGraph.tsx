@@ -30,10 +30,10 @@ function BarGraph({ data, width, height }: any) {
         <XAxis
           tickLine={false}
           stroke="#cdd6f4"
-          dataKey="date"
+          dataKey="DATE"
           tickFormatter={
-            (date) => {
-              const dateObj = new Date(date)
+            (DATE) => {
+              const dateObj = new Date(DATE)
               return dateObj.toLocaleDateString('en-US', { weekday: 'short' })
             }
           }
