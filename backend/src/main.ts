@@ -15,7 +15,7 @@ const port = 3002
 // Middlewares
 app.use(cors({
   credentials: true,
-  origin: "*"
+  origin: process.env.CLIENT_URL!
 }))
 app.use(cookieParser())
 app.use(bodyParser.json())
