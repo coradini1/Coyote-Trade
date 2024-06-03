@@ -34,6 +34,7 @@ function LoginForm({ item }: any) {
       },
       body: JSON.stringify(formData),
       credentials: "include",
+      mode: "no-cors",
     })
 
     const data = await response.json()
