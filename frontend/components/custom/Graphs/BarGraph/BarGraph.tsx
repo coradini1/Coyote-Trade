@@ -8,17 +8,16 @@ import {
   Tooltip,
   BarChart,
   Bar,
-  CartesianGrid
+  CartesianGrid,
 } from 'recharts'
 
 function BarGraph({ data, width, height }: any) {
   return (
     <ResponsiveContainer width={width} height={height}>
-      <BarChart data={data}>
-        <CartesianGrid stroke="#cdd6f4" strokeDasharray="3 3" />
+      <BarChart margin={{top: 20, right: 20, bottom: 20, left: 20}} data={data}>
+        <CartesianGrid stroke="#323244" vertical={false} />
         <Bar dataKey="users_gain"
           className="rounded-xl"
-          background={<Rectangle fill="#cdd6f4" fillOpacity={0.1} radius={[10, 10, 0, 0]} />}
           barSize={50}
           radius={[10, 10, 0, 0]}
           stroke="#7287fd"
@@ -31,18 +30,21 @@ function BarGraph({ data, width, height }: any) {
           tickLine={false}
           stroke="#cdd6f4"
           dataKey="DATE"
+          axisLine={false}
           tickFormatter={
             (DATE) => {
               const dateObj = new Date(DATE)
-              return dateObj.toLocaleDateString('en-US', { weekday: 'short' })
+              dateObj.setDate(dateObj.getDate() + 1)
+              return dateObj.toLocaleDateString('en-GB', { weekday: 'short' })
             }
           }
         />
-        <YAxis width={20} tickLine={false} stroke="#cdd6f4"  />
+        <YAxis width={20} tickLine={false} axisLine={false} stroke="#cdd6f4" allowDecimals={false}  />
         <Tooltip content={
           ({ active, payload, label }: any) => {
             if (active) {
               const dateObj = new Date(label)
+              dateObj.setDate(dateObj.getDate() + 1)
               label = dateObj.toLocaleDateString('en-GB')
               return (
                 <div className="rounded-xl bg-white p-4 text-textBase shadow-lg dark:bg-foregroundDark dark:text-textBaseDark">

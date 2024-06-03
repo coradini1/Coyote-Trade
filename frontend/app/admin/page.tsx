@@ -34,7 +34,7 @@ export default function Page() {
         credentials: 'include'
       })
 
-      const userMetrics = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/metrics/users?page=1&limit=5`, {
+      const userMetrics = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/metrics/users?page=1&limit=15`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'

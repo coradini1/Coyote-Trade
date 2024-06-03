@@ -16,6 +16,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+
 import { IoIosMore } from "react-icons/io"
 
 function Table({ columns, rows }: any) {
@@ -40,6 +48,31 @@ function Table({ columns, rows }: any) {
       })
   }
 
+  function handleRoleChange(role: string, userEmail: string) {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/user/update`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        user: {
+          email: userEmail,
+          role: role
+        }
+      }),
+      credentials: 'include'
+    }).then(() => {
+        setTableRows({
+          data: tableRows?.data.map((row: any) => {
+            if (row.email === userEmail) {
+              row.role = role
+            }
+            return row
+          })
+        })
+    })
+  }
+
   return (
     <TableComponent>
       <TableHeader>
@@ -55,7 +88,17 @@ function Table({ columns, rows }: any) {
             <TableCell className="font-medium">{userData.name} {userData.surname}</TableCell>
             <TableCell>{userData.email}</TableCell>
             <TableCell>{userData.address}</TableCell>
-            <TableCell>{userData.role}</TableCell>
+            <Select onValueChange={
+              (event) => handleRoleChange(event, userData.email)
+            }>
+              <SelectTrigger className="w-[180px] focus:outline-none focus:ring-0 mt-3">
+                <SelectValue placeholder={`${userData.role}`} />
+              </SelectTrigger>
+              <SelectContent >
+                <SelectItem value="admin">admin</SelectItem>
+                <SelectItem value="user">user</SelectItem>
+              </SelectContent>
+            </Select>
             <TableCell className="text-right">{new Date(userData.createdAt).toLocaleDateString("en-GB")}</TableCell>
             <TableCell>
               <Dropdown userEmail={userData.email} handleCloseAccount={handleCloseAccount} />
