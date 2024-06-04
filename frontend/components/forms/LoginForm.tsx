@@ -27,28 +27,33 @@ function LoginForm({ item }: any) {
 
   async function handleForm(e: React.FormEvent) {
     e.preventDefault()
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData),
-      credentials: "include",
-      mode: "no-cors",
-    })
+   try {
+     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/login`, {
+       method: "POST",
+       headers: {
+         "Content-Type": "application/json",
+       },
+       body: JSON.stringify(formData),
+       credentials: "include",
+     })
+ 
+     const data = await response.json()
+ 
+     document.cookie = `token=${data.token}; path=/;`
+ 
+     toast({
+       title: data.type === "success" ? "Success" : "Error",
+       description: data.message,
+     });
+ 
+     if (data.type === "success") {
+       window.location.href = "/admin"
+     }
+   } catch(error) {
+    console.log(error)
+   } 
 
-    const data = await response.json()
 
-    document.cookie = `token=${data.token}; path=/;`
-
-    toast({
-      title: data.type === "success" ? "Success" : "Error",
-      description: data.message,
-    });
-
-    if (data.type === "success") {
-      window.location.href = "/admin"
-    }
   }
   return (
     <form onSubmit={(e: React.FormEvent) => handleForm(e)}  className="mt-10 flex flex-col gap-6">
