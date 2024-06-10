@@ -24,10 +24,25 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
+import Modal from "../Modal/Modal"
+
 import { IoIosMore } from "react-icons/io"
 
 function Table({ columns, rows }: any) {
   const [tableRows, setTableRows] = useState<any>(rows)
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
+
+
+  const openModal = (userData: any) => {
+    setSelectedUser(userData);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedUser(null);
+  };
 
   function handleCloseAccount(userEmail: string) {
     fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/user/delete`, {
@@ -74,6 +89,7 @@ function Table({ columns, rows }: any) {
   }
 
   return (
+    <>
     <TableComponent>
       <TableHeader>
         <TableRow>
@@ -101,23 +117,34 @@ function Table({ columns, rows }: any) {
             </Select>
             <TableCell className="text-right">{new Date(userData.createdAt).toLocaleDateString("en-GB")}</TableCell>
             <TableCell>
-              <Dropdown userEmail={userData.email} handleCloseAccount={handleCloseAccount} />
-            </TableCell>
+            <Dropdown
+                  userEmail={userData.email}
+                  handleCloseAccount={handleCloseAccount}
+                  openModal={() => openModal(userData)}
+                />
+              </TableCell>
           </TableRow>
         ))}
       </TableBody>
     </TableComponent>
+     {isModalOpen && <Modal isOpen={isModalOpen} onClose={closeModal} user={selectedUser} />}
+   </>
   )
 }
+interface DropdownProps {
+  userEmail: string;
+  handleCloseAccount: (email: string) => void;
+  openModal: () => void;
+}
 
-function Dropdown({ userEmail, handleCloseAccount }: { userEmail: string, handleCloseAccount: (email: string) => void } ) {
+function Dropdown({ userEmail, handleCloseAccount, openModal }: DropdownProps) {
   return (
     <DropdownMenu >
       <DropdownMenuTrigger className="rounded-sm p-1 text-textBase hover:bg-black/5 focus:outline-none dark:text-textBaseDark dark:hover:bg-black/20">
         <IoIosMore size={23} />
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <DropdownMenuItem>View details</DropdownMenuItem>
+      <DropdownMenuItem onClick={openModal}>Edit</DropdownMenuItem>
         <DropdownMenuItem onClick={
           () => handleCloseAccount(userEmail)
         }>
