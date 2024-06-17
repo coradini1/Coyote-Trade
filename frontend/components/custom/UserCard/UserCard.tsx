@@ -1,16 +1,19 @@
 "use client";
-import React from "react";
-import { useUser } from "@/hooks/useUser";
+import React, {use, useEffect, useState} from "react";
 
-// components/UserCard/UserCard.tsx
 
-const UserCard: React.FC = () => {
+function UserCard({userData }: any) {
+
+  useEffect(() => {
+  }
+  , [userData]);
+
   return (
     <div className="user-card bg-white p-4 rounded shadow">
-      <h2 className="text-lg font-bold">Gabriel Coradini</h2>
+      <h2 className="text-lg font-bold">{userData?.name} {userData?.surname}</h2>
       <p>Account settings</p>
-      <p>Balance: $12,303.43</p>
-      <p>Cash Available: $3,103.43</p>
+      <p>Balance: ${userData?.balance}</p>
+      <p>Cash Available: ${userData?.balance}</p>
       <div className="flex space-x-2 mt-4">
         <button className="bg-blue-500 text-white px-4 py-2 rounded">
           Deposit
