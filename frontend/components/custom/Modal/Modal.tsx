@@ -36,7 +36,6 @@ function Modal({ onClose, userData }: any) {
   });
 
   useEffect(() => {
-    console.log(userData, "userData");
   }, [userData]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -47,7 +46,6 @@ function Modal({ onClose, userData }: any) {
   };
 
   function handleSubmit(userEmail: string) {
-    console.log(updateUserInfo, "updateUserInfo");
     fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/user/update`, {
       method: "PATCH",
       headers: {

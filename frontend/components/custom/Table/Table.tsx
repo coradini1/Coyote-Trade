@@ -43,7 +43,6 @@ function Table({ columns, rows }: any) {
   };
 
   useEffect(() => {
-    console.log(selectedUser, "selectedUser");
   }, [selectedUser]);
 
   const closeModal = () => {
