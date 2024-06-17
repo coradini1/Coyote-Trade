@@ -20,6 +20,7 @@ export async function userController(req: any, res: Response) {
     surname,
     birthdate,
     address,
+    balance,
     role,
     createdAt,
   } = userData
@@ -31,6 +32,7 @@ export async function userController(req: any, res: Response) {
       name,
       surname,
       birthdate,
+      balance,
       address,
       role,
       createdAt,
