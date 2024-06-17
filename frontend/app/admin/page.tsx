@@ -44,7 +44,7 @@ export default function Page() {
       );
 
       const userMetrics = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/metrics/users?page=1&limit=15`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/metrics/users?page=1&limit=200`,
         {
           method: "GET",
           headers: {
@@ -60,7 +60,6 @@ export default function Page() {
       setUser(userData.user);
       setUsers(userMetricsJson);
       setData(metricsJson);
-      console.log( metricsJson, userMetricsJson, userData)
     }
 
     fetchData();
