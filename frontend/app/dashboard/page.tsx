@@ -1,12 +1,11 @@
 "use client";
-import React, {useState, useEffect  } from "react";
+import React, { useState, useEffect } from "react";
 import UserCard from "@/components/custom/UserCard/UserCard";
 import Orders from "@/components/custom/Orders/Orders";
 import Portfolio from "@/components/custom/Portfolio/Portfolio";
 import Investments from "@/components/custom/Investments/Investments";
 
 export default function Page() {
-
   const [user, setUser] = useState<any>();
 
   useEffect(() => {
@@ -24,7 +23,10 @@ export default function Page() {
 
       const userData = await response.json();
 
-      if (userData?.user?.role !== "admin" && userData?.user?.role !== "user" || !userData) {
+      if (
+        (userData?.user?.role !== "admin" && userData?.user?.role !== "user") ||
+        !userData
+      ) {
         return (window.location.href = "/login");
       }
 
@@ -50,13 +52,11 @@ export default function Page() {
         }
       );
 
-
       setUser(userData.user);
     }
 
     fetchData();
   }, []);
-
 
   return (
     <div>
