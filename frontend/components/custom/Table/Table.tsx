@@ -44,7 +44,7 @@ function Table({ columns, rows }: any) {
 
   useEffect(() => {
     console.log(selectedUser, "selectedUser");
-  }, [selectedUser]); 
+  }, [selectedUser]);
 
   const closeModal = () => {
     setIsModalOpen(false);
@@ -166,7 +166,7 @@ function Dropdown({
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuItem onClick={() => openModal(userData)}>
-          Edit
+          <p className="cursor-pointer text-500">Edit</p>
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => handleCloseAccount(userEmail)}>
           <p className="cursor-pointer text-red-500">Close account</p>

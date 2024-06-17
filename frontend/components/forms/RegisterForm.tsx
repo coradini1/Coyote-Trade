@@ -9,15 +9,15 @@ import Link from "@/components/custom/Link/Link";
 import Input from "@/components/custom/Input/Input";
 
 import { useToast } from "@/components/ui/use-toast";
-import { format } from "date-fns"
-import { cn } from "@/lib/utils"
-import { Calendar } from "@/components/ui/calendar"
+import { format } from "date-fns";
+import { cn } from "@/lib/utils";
+import { Calendar } from "@/components/ui/calendar";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"
-import Button from "@/components/custom/Button/Button"
+} from "@/components/ui/popover";
+import Button from "@/components/custom/Button/Button";
 import { Button as BdButton } from "@/components/ui/button";
 import DarkModeButton from "@/components/custom/DarkModeButton/DarkModeButton";
 
@@ -78,23 +78,27 @@ function RegisterForm() {
   };
 
   async function handleForm(e: React.FormEvent) {
-    e.preventDefault()
+    e.preventDefault();
     setLoading(true);
 
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/register`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData),
-      credentials: "include",
-    })
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/register`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+        credentials: "include",
+      }
+    );
 
-    const data = await response.json()
+    const data = await response.json();
 
     toast({
       title: data.type === "success" ? "Success" : "Error",
       description: data.message,
+      duration: 5000,
     });
 
     if (data.type === "success") {
@@ -115,7 +119,7 @@ function RegisterForm() {
           variants={container}
           className={`relative min-h-[548px] w-[450px] rounded-xl border-2 border-solid border-lavender bg-white px-12 py-8 shadow-xl transition-colors duration-300 ease-out dark:bg-foregroundDark`}
         >
-          <DarkModeButton />  
+          <DarkModeButton />
           <>
             <motion.h1
               variants={item}
@@ -196,7 +200,13 @@ function RegisterForm() {
                         !date && "text-muted-foreground"
                       )}
                     >
-                      {date ? format(date, "PPP") : <span className="text-sm text-muted-foreground/60">Birthday</span>}
+                      {date ? (
+                        format(date, "PPP")
+                      ) : (
+                        <span className="text-sm text-muted-foreground/60">
+                          Birthday
+                        </span>
+                      )}
                     </BdButton>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0">
@@ -211,7 +221,7 @@ function RegisterForm() {
                         setDate(date);
                         setFormData({
                           ...formData,
-                          birthdate: date?.toLocaleDateString()! 
+                          birthdate: date?.toLocaleDateString()!,
                         });
                       }}
                       initialFocus
@@ -236,9 +246,7 @@ function RegisterForm() {
               />
 
               <div className="flex flex-col">
-                <motion.div
-                  variants={item}
-                >
+                <motion.div variants={item}>
                   <Button
                     type="submit"
                     isLoading={loading}
@@ -262,4 +270,4 @@ function RegisterForm() {
   );
 }
 
-export default RegisterForm
+export default RegisterForm;

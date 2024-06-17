@@ -16,35 +16,34 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+import { Toaster } from "@/components/ui/toaster";
+
+import { useToast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { use, useEffect, useState
- } from "react";
+import { useEffect, useState } from "react";
 
 function Modal({ onClose, userData }: any) {
+  const { toast } = useToast();
 
-const [updateUserInfo, setUpdateUserInfo] = useState({
+  const [updateUserInfo, setUpdateUserInfo] = useState({
     role: "",
     name: "",
     surname: "",
     address: "",
   });
 
-  
-
   useEffect(() => {
     console.log(userData, "userData");
   }, [userData]);
 
-  const handleChange = (e: 
-    React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUpdateUserInfo({
       ...updateUserInfo,
       [e.target.id]: e.target.value,
     });
-  }
-    
+  };
 
   function handleSubmit(userEmail: string) {
     console.log(updateUserInfo, "updateUserInfo");
@@ -64,15 +63,20 @@ const [updateUserInfo, setUpdateUserInfo] = useState({
       }),
       credentials: "include",
     }).then(() => {
+      toast({
+        title: "Success",
+        description: "User updated successfully",
+        duration: 5000,
+      });
     });
   }
-
 
   return (
     <>
       <Dialog open={true} onOpenChange={onClose}>
         <DialogTrigger>Open</DialogTrigger>
         <div className="dark">
+          <Toaster />
           <DialogContent className="sm:max-w-[425px] bg-foregroundDark dark:bg-foregroundDark">
             <DialogHeader>
               <DialogTitle className="text-white">Edit profile</DialogTitle>
@@ -91,7 +95,6 @@ const [updateUserInfo, setUpdateUserInfo] = useState({
                   defaultValue={userData?.name}
                   className="col-span-3"
                   onChange={handleChange}
-
                 />
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
@@ -132,25 +135,24 @@ const [updateUserInfo, setUpdateUserInfo] = useState({
                   Role
                 </Label>
                 <Select
-                // onValueChange={(event) =>
-                //   handleRoleChange(event, userData.email)
-                // }
-                onValueChange={(event)=>{
-                  setUpdateUserInfo({
-                    ...updateUserInfo,
-                    role: event,
-                  });
-                }}
-
-              >
-                <SelectTrigger className="w-[180px] focus:outline-none focus:ring-0 mt-3">
-                  <SelectValue placeholder={`${userData.role}`} />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="admin">admin</SelectItem>
-                  <SelectItem value="user">user</SelectItem>
-                </SelectContent>
-              </Select>
+                  // onValueChange={(event) =>
+                  //   handleRoleChange(event, userData.email)
+                  // }
+                  onValueChange={(event) => {
+                    setUpdateUserInfo({
+                      ...updateUserInfo,
+                      role: event,
+                    });
+                  }}
+                >
+                  <SelectTrigger className="w-[180px] focus:outline-none focus:ring-0 mt-3">
+                    <SelectValue placeholder={`${userData.role}`} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="admin">admin</SelectItem>
+                    <SelectItem value="user">user</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="createdAt" className="text-right text-white">
@@ -165,7 +167,10 @@ const [updateUserInfo, setUpdateUserInfo] = useState({
               </div>
             </div>
             <DialogFooter>
-              <Button onClick={()=>handleSubmit(userData.email)} type="submit">
+              <Button
+                onClick={() => handleSubmit(userData.email)}
+                type="submit"
+              >
                 Save changes
               </Button>
             </DialogFooter>
