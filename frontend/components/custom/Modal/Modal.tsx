@@ -32,6 +32,7 @@ function Modal({ onClose, userData }: any) {
     name: "",
     surname: "",
     address: "",
+    birthdate: "",
   });
 
   useEffect(() => {
@@ -59,6 +60,7 @@ function Modal({ onClose, userData }: any) {
           name: updateUserInfo.name,
           surname: updateUserInfo.surname,
           address: updateUserInfo.address,
+          birthdate: updateUserInfo.birthdate,
         },
       }),
       credentials: "include",
@@ -118,6 +120,17 @@ function Modal({ onClose, userData }: any) {
                   className="col-span-3"
                   disabled={true}
                 />
+              </div>{" "}
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="birthdate" className="text-right text-white">
+                  Birthday
+                </Label>
+                <Input
+                  id="birthdate"
+                  defaultValue={userData?.birthdate}
+                  onChange={handleChange}
+                  className="col-span-3"
+                />
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="address" className="text-right text-white">
@@ -135,9 +148,6 @@ function Modal({ onClose, userData }: any) {
                   Role
                 </Label>
                 <Select
-                  // onValueChange={(event) =>
-                  //   handleRoleChange(event, userData.email)
-                  // }
                   onValueChange={(event) => {
                     setUpdateUserInfo({
                       ...updateUserInfo,
