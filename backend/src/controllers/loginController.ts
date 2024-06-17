@@ -46,6 +46,7 @@ export async function loginController(req: Request, res: Response) {
     secure: true,
   })
   res.status(200).json({
+    token,
     type: "success",
     message: "You have successfully logged in",
   })
