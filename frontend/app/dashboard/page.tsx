@@ -7,6 +7,7 @@ import Investments from "@/components/custom/Investments/Investments";
 
 export default function Page() {
   const [user, setUser] = useState<any>();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     async function fetchData() {
@@ -30,28 +31,6 @@ export default function Page() {
         return (window.location.href = "/login");
       }
 
-      const metrics = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/metrics/trends`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-        }
-      );
-
-      const userMetrics = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/metrics/users?page=1&limit=15`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-        }
-      );
-
       setUser(userData.user);
     }
 
@@ -63,9 +42,9 @@ export default function Page() {
       <div className="p-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Portfolio />
-          <UserCard />
+          <UserCard userData={user}/>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
           <Investments />
           <Orders />
         </div>
