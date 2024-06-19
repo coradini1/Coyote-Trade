@@ -1,24 +1,48 @@
 "use client";
 import React, { use, useEffect, useState } from "react";
+import Modal from "../Modal/Modal";
 
 function UserCard({ userData }: any) {
-  useEffect(() => {
-  }, [userData]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
+
+  useEffect(() => {}, [userData]);
 
   const fetchStripePublic = async () => {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/stripe`);
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/stripe`
+    );
     const data = await response.json();
-    console.log(data)
-    
-  }
+    console.log(data);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedUser(null);
+  };
+
+  const openModal = (userData: any) => {
+    console.log(userData);
+    setSelectedUser(userData);
+    setIsModalOpen(true);
+  };
 
   return (
     <div className="user-card bg-white p-4 rounded shadow">
       <h2 className="text-lg font-bold">
         {userData?.name} {userData?.surname}
       </h2>
-      <p>Account settings</p>
-      <p>Balance: ${userData?.balance}</p>
+
+      <button
+        className="bg-purple-500 text-white px-2 py-1 rounded"
+        onClick={() => openModal(userData)}
+      >
+        Account settings
+      </button>
+      <div style={{ display: "flex", flexDirection: "row" }}>
+        <p style={{ marginRight: 5}}>Balance :</p>
+        <p className="text-lg font-bold">${userData?.balance}</p>
+      </div>
       <p>Cash Available: ${userData?.balance}</p>
       <div className="flex space-x-2 mt-4">
         <button
@@ -46,6 +70,13 @@ function UserCard({ userData }: any) {
         >
           Log out
         </h1>
+        {isModalOpen && (
+          <Modal
+            isOpen={isModalOpen}
+            onClose={closeModal}
+            userData={selectedUser}
+          />
+        )}
       </div>
     </div>
   );
