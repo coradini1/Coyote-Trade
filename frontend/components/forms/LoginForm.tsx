@@ -54,6 +54,7 @@ function LoginForm({ item }: any) {
       });
 
       if (data.type === "success") {
+        localStorage.setItem('user', data.user); 
         window.location.href = "/admin";
       }
     } catch (error) {

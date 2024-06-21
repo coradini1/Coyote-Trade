@@ -40,15 +40,18 @@ export default function Page() {
   return (
     <div>
       <div className="p-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Portfolio />
-          <UserCard userData={user}/>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="md:col-span-2 ">
+            <Portfolio />
+          </div>
+          <UserCard userData={user} />
         </div>
-       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
           <Investments />
           <Orders />
         </div>
       </div>
     </div>
   );
+  
 }

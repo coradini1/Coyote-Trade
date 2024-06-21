@@ -26,8 +26,11 @@ import { useEffect, useState } from "react";
 
 function Modal({ onClose, userData }: any) {
   const { toast } = useToast();
+  const [userRole, setUserRole] = useState("");
 
+  
   const [updateUserInfo, setUpdateUserInfo] = useState({
+    logged_user_role: "",
     role: "",
     name: "",
     surname: "",
@@ -36,6 +39,7 @@ function Modal({ onClose, userData }: any) {
   });
 
   useEffect(() => {
+    handleUserRole();
   }, [userData]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -45,7 +49,18 @@ function Modal({ onClose, userData }: any) {
     });
   };
 
+
+  function handleUserRole() {
+    const storedUser = localStorage.getItem("user");
+    if (!storedUser) {
+      return;
+    }
+    const user = JSON.parse(storedUser);
+    setUserRole(user.role);
+  }
+
   function handleSubmit(userEmail: string) {
+
     fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/user/update`, {
       method: "PATCH",
       headers: {
@@ -53,6 +68,7 @@ function Modal({ onClose, userData }: any) {
       },
       body: JSON.stringify({
         user: {
+          logged_user_role: userRole,
           email: userEmail,
           role: updateUserInfo.role,
           name: updateUserInfo.name,
@@ -141,6 +157,7 @@ function Modal({ onClose, userData }: any) {
                   onChange={handleChange}
                 />
               </div>
+              { userRole === "admin"   && (
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="role" className="text-right text-white">
                   Role
@@ -162,6 +179,20 @@ function Modal({ onClose, userData }: any) {
                   </SelectContent>
                 </Select>
               </div>
+              )}
+              { userRole === "admin"   && (
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="balance" className="text-right text-white">
+                  Balance
+                </Label>
+                <Input
+                  id="balance"
+                  defaultValue={userData?.balance}
+                  className="col-span-3"
+                  disabled={true}
+                />
+              </div>
+              )}
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="createdAt" className="text-right text-white">
                   Created At
@@ -175,11 +206,18 @@ function Modal({ onClose, userData }: any) {
               </div>
             </div>
             <DialogFooter>
+            <Button
+                onClick={onClose}
+                variant="destructive"
+                className="mr-2"
+              >
+                CANCEL
+              </Button>
               <Button
                 onClick={() => handleSubmit(userData.email)}
                 type="submit"
               >
-                Save changes
+                UPDATE PROFILE
               </Button>
             </DialogFooter>
           </DialogContent>

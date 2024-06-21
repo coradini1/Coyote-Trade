@@ -10,6 +10,7 @@ import login from "./routes/login"
 import register from "./routes/register"
 import user from "./routes/user"
 import metrics from "./routes/metrics"
+import assets from "./routes/assets"
 
 
 // Server
@@ -45,6 +46,7 @@ app.use("/api/register", register)
 app.use("/api/login", login)
 app.use("/api/user", user)
 app.use("/api/metrics", metrics)
+app.use("/api/assets", assets)
 
 
 app.listen(port, () => {

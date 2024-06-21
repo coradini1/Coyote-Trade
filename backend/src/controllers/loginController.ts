@@ -3,7 +3,7 @@ import { Request, Response } from "express"
 import { db } from "../db/db"
 
 import { LoginBody } from "../types"
-import { comparePasswords, generateToken } from "../utils/utils"
+import { comparePasswords, generateToken, userContext } from "../utils/utils"
 
 export async function loginController(req: Request, res: Response) {
   const {
@@ -40,14 +40,18 @@ export async function loginController(req: Request, res: Response) {
   }
 
   const token = generateToken(email, persist)
-
+  
   res.cookie("token", token, {
     httpOnly: true,
     secure: true,
-  })
+  },)
+
+  const userJsonString = JSON.stringify(userContext(user));
+
   res.status(200).json({
+    user: userJsonString, 
     token,
     type: "success",
     message: "You have successfully logged in",
-  })
+  });
 }

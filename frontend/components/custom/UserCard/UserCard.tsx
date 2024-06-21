@@ -29,29 +29,47 @@ function UserCard({ userData }: any) {
 
   return (
     <div className="user-card bg-white p-4 rounded shadow">
-      <h2 className="text-lg font-bold">
+      <h2 className="text-2xl font-bold">
         {userData?.name} {userData?.surname}
       </h2>
 
       <button
-        className="bg-purple-500 text-white px-2 py-1 rounded"
+        className="text-white px-4 py-1 rounded mt-2"
+        style={{ backgroundColor: "#7287FD" }}
         onClick={() => openModal(userData)}
       >
         Account settings
       </button>
-      <div style={{ display: "flex", flexDirection: "row" }}>
-        <p style={{ marginRight: 5}}>Balance :</p>
-        <p className="text-lg font-bold">${userData?.balance}</p>
+      <hr
+        style={{
+          border: 0,
+          height: 2,
+          backgroundColor: "#9399B2",
+          marginTop: 10,
+        }}
+      />
+      <div className="mt-2" style={{ display: "flex", flexDirection: "row" }}>
+        <p style={{ color: "#A6ADC8" }} className="mr-1 text-2xl">
+          Balance:
+        </p>
+        <p className="mr-1 text-xl font-bold mt-1">${userData?.balance}</p>
       </div>
-      <p>Cash Available: ${userData?.balance}</p>
+      <div style={{ display: "flex", flexDirection: "row" }}>
+        <p style={{ color: "#A6ADC8" }}>Cash Available:</p>
+        <p style={{ marginLeft: 5, color: "#585B70" }}>${userData?.balance}</p>
+      </div>
       <div className="flex space-x-2 mt-4">
         <button
-          className="bg-blue-500 text-white px-4 py-2 rounded"
+          className=" text-white px-4 py-1 rounded"
+          style={{ backgroundColor: "#7287FD" }}
           onClick={fetchStripePublic}
         >
           Deposit
         </button>
-        <button className="bg-red-500 text-white px-4 py-2 rounded">
+        <button
+          className="text-white px-4 py-1 rounded"
+          style={{ backgroundColor: "#7287FD" }}
+        >
           Withdraw
         </button>
         <h1
