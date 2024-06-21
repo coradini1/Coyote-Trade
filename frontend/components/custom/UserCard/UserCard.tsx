@@ -1,6 +1,8 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Modal from "../Modal/Modal";
+import { IoLogOutOutline } from 'react-icons/io5';
+
 
 function UserCard({ userData }: any) {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -72,22 +74,21 @@ function UserCard({ userData }: any) {
         >
           Withdraw
         </button>
-        <h1
-          onClick={() => {
-            fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/user/logout`, {
-              method: "GET",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              credentials: "include",
-            }).then(() => {
-              window.location.href = "/login";
-            });
-          }}
-          className="cursor-pointer rounded-md border-2 border-solid border-red-700 px-6 py-3 font-medium text-red-700 transition-all duration-200 ease-out hover:bg-red-700 hover:text-white dark:text-textBaseDark"
-        >
-          Log out
-        </h1>
+        <button
+  onClick={() => {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/user/logout`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    }).then(() => {
+      window.location.href = "/login";
+    });
+  }}
+>
+  <IoLogOutOutline size={30} /> 
+</button>
         {isModalOpen && (
           <Modal
             isOpen={isModalOpen}

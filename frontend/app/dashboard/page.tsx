@@ -38,20 +38,23 @@ export default function Page() {
   }, []);
 
   return (
-    <div>
-      <div className="p-4">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="md:col-span-2 ">
-            <Portfolio />
-          </div>
+    <div className="container mx-auto px-4 py-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="md:col-span-2 space-y-4">
+          <Portfolio />
+        </div>
+        <div className="md:col-span-1 space-y-4">
           <UserCard userData={user} />
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+        <div className="space-y-4">
           <Investments />
+        </div>
+        <div className="space-y-4">
           <Orders />
         </div>
       </div>
     </div>
   );
-  
 }
