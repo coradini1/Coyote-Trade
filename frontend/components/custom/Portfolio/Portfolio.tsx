@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Portfolio: React.FC = () => {
+function Portfolio({userData}: any) {
   return (
     <div className="portfolio bg-white p-4 rounded shadow">
       <h2 className="text-lg font-bold">Portfolio</h2>
