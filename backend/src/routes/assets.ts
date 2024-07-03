@@ -5,7 +5,7 @@ import { assetsController } from "../controllers/assetsController"
 
 const router = express.Router()
 
-router.get("/", authenticateMobileToken, assetsController)
+router.get("/all", authenticateMobileToken, assetsController)
 router.get("/users", authenticateMobileToken, usersController)
 
 export default router
