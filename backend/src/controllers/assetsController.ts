@@ -4,6 +4,7 @@ import { db } from "../db/db";
 export async function assetsController(req: Request, res: Response) {
   const userEmail = req.user?.email;
 
+
   if (!userEmail) {
     return res.status(400).json({
       message: "User email is missing",
@@ -21,30 +22,13 @@ export async function assetsController(req: Request, res: Response) {
       });
     }
 
-    const userOrders = await db.query.ordersTable.findMany({
-      where: (order, { eq }) => eq(order.user_id, user.id),
+    const userAssets = await db.query.assetsTable.findMany({
+      where: (asset, { eq }) => eq(asset.user_id, user.id),
     });
 
-    if (!userOrders || userOrders.length === 0) {
-      return res.status(200).json({
-        message: "User has not placed any orders",
-        data: [],
-      });
-    }
-
-    const userAssets = await Promise.all(
-      userOrders.map(async (order) => {
-        const asset = await db.query.assetsTable.findFirst({
-          where: (asset, { eq }) => eq(asset.id, order.asset_id as number),
-        });
-        return asset;
-      })
-    );
-    const filteredAssets = userAssets.filter((asset) => asset !== null);
-
     return res.status(200).json({
-      message: "Assets bought by the user",
-      data: filteredAssets,
+      message: "Assets owned by the user",
+      data: userAssets,
     });
   } catch (error) {
     console.error("Error retrieving user assets:", error);

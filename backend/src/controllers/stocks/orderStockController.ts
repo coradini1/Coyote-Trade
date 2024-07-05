@@ -1,9 +1,8 @@
 import { Request, Response } from "express";
 import { alpaca } from "../../client/alpaca";
 import { db } from "../../db/db";
-import { ordersTable } from "../../db/schema";
-import { eq } from "drizzle-orm";
-import { assetsTable } from "../../db/schema";
+import { ordersTable, assetsTable } from "../../db/schema";
+import { sql } from "drizzle-orm";
 
 type OrderStockRequest = {
   symbol: string;
@@ -31,10 +30,10 @@ export async function orderStockController(req: Request, res: Response) {
     });
   }
 
-  let qtyConverted;
-  if (typeof qty !== "string") {
-    qtyConverted = String(qty);
-  }
+  // let qtyConverted;
+  // if (typeof qty !== "string") {
+  //   qtyConverted = String(qty);
+  // }
 
   try {
     const user = await db.query.usersTable.findFirst({
@@ -48,15 +47,23 @@ export async function orderStockController(req: Request, res: Response) {
     }
 
     let asset = await db.query.assetsTable.findFirst({
-      where: (asset, { eq }) => eq(asset.asset_symbol, symbol),
+      where: (asset, { and, eq }) => and(eq(asset.asset_symbol, symbol), eq(asset.user_id, user.id)),
     });
 
-    if (!asset) {
+    if (asset) {
+      if (side === 'buy') {
+        await db.update(assetsTable)
+          .set({ quantity: asset.quantity + parseInt(qty, 10) })
+          .where(sql`id = ${asset.id}`)
+          .execute();
+      }
+    } else {
       const newAsset = {
+        user_id: user.id,
         asset_name: symbol,
         asset_symbol: symbol,
         buy_price: 0,
-        quantity: 0,
+        quantity: parseInt(qty, 10),
       };
       const insertedAssets = await db
         .insert(assetsTable)
@@ -67,7 +74,7 @@ export async function orderStockController(req: Request, res: Response) {
 
     const order = await alpaca.createOrder({
       symbol,
-      qty: typeof qty !== "string" ? qtyConverted : qty,
+      qty: typeof qty !== "string" ? qty : parseInt(qty, 10),
       side,
       type,
       time_in_force,
@@ -87,8 +94,9 @@ export async function orderStockController(req: Request, res: Response) {
       order,
     });
   } catch (error) {
+    console.error("Error:", error);
     res.status(500).json({
-      message: error,
+      message: "Internal server error",
     });
   }
 }
