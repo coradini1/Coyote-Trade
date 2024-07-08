@@ -53,6 +53,7 @@ export const alertsTable = sqliteTable("alerts", {
   user_id: integer("user_id").references(() => usersTable.id),
   asset_id: integer("asset_id").references(() => assetsTable.id),
   target_price: integer("target_price").notNull(),
+  lower_threshold: integer("lower_threshold").notNull(),
   asset_symbol: text("asset_symbol").notNull(),
   createdAt: text("created_at")
     .default(sql`(CURRENT_TIMESTAMP)`)

@@ -1,13 +1,13 @@
 import { Request, Response } from "express";
 import { db } from "../../db/db";
-import { eq } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 import { alertsTable } from "../../db/schema";
 
 export async function alertsUpdateController(req: Request, res: Response) {
   console.log(req.body); 
 
   const userEmail = req.user?.email;
-  const { symbol, target_price, asset_id } = req.body;
+  const { symbol, target_price, lower_threshold, asset_id } = req.body;
 
   if (!userEmail) {
     return res.status(400).json({
@@ -31,7 +31,7 @@ export async function alertsUpdateController(req: Request, res: Response) {
         message: "User not found",
       });
     }
-    console.log(asset_id)
+    console.log(asset_id);
     const alertTest = await db.query.alertsTable.findMany({});
     console.log(alertTest);
 
@@ -52,7 +52,10 @@ export async function alertsUpdateController(req: Request, res: Response) {
 
     await db
       .update(alertsTable)
-      .set({ target_price: target_price })
+      .set({ 
+        target_price: target_price,
+        lower_threshold: lower_threshold 
+      })
       .where(eq(alertsTable.id, alert.id))
       .execute();
 

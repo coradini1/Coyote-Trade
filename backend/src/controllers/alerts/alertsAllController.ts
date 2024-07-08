@@ -26,6 +26,7 @@ export async function alertsAllController(req: Request, res: Response) {
       id: sql`alerts.id`,
       asset_symbol: sql`alerts.asset_symbol`,
       target_price: sql`alerts.target_price`,
+      lower_threshold: sql`alerts.lower_threshold`,
       companyName: sql`assets.asset_name`,
       quantity: sql`assets.quantity`,
       currentPrice: sql`assets.buy_price`,

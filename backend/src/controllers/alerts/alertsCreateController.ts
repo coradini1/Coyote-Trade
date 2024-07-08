@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { db } from "../../db/db";
-import { eq } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 import { alertsTable, assetsTable } from "../../db/schema";
 
 export async function alertsCreateController(req: Request, res: Response) {
@@ -21,12 +21,13 @@ export async function alertsCreateController(req: Request, res: Response) {
       message: "User not found",
     });
   }
+
   console.log(req.body);
-  const { assetSymbol, targetPrice, assetId } = req.body;
+  const { assetSymbol, targetPrice, lowerThreshold, assetId } = req.body;
 
   if (!assetSymbol || !targetPrice || !assetId) {
     return res.status(400).json({
-      message: "Asset symbol, target price and asset id are required",
+      message: "Asset symbol, target price, and asset id are required",
     });
   }
 
@@ -63,6 +64,7 @@ export async function alertsCreateController(req: Request, res: Response) {
         user_id: user.id,
         asset_id: asset.id,
         target_price: targetPrice,
+        lower_threshold: lowerThreshold, 
       })
       .execute();
 
