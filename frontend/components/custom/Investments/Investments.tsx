@@ -1,138 +1,37 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import Cookies from "js-cookie";
 
 function Investments({ userData }: any) {
-  const investmentData = [
+  useEffect(() => {
+    fetchAssets();
+  }, []);
+  const [assets, setAssets] = useState([
     {
-      name: "NVIDIA",
-      symbol: "NVDA",
-      quantity: 1.54,
-      value: "$950.84",
-      change: "+$399.09 ($72.33)",
+      asset_name: "",
+      asset_symbol: "",
+      quantity: 0,
+      buy_price: 0,
+      change: "",
     },
-    {
-      name: "Apple Inc.",
-      symbol: "AAPL",
-      quantity: 2.34,
-      value: "$1870.45",
-      change: "-$123.67 (-$18.12)",
-    },
-    {
-      name: "Amazon.com Inc.",
-      symbol: "AMZN",
-      quantity: 0.75,
-      value: "$3321.67",
-      change: "+$567.89 (+$98.76)",
-    },
-    {
-      name: "Microsoft",
-      symbol: "MSFT",
-      quantity: 3.21,
-      value: "$1598.32",
-      change: "+$231.45 (+$54.21)",
-    },
-    {
-      name: "Tesla",
-      symbol: "TSLA",
-      quantity: 1.1,
-      value: "$1200.50",
-      change: "-$89.76 (-$12.34)",
-    },
-    {
-      name: "Tesla",
-      symbol: "TSLA",
-      quantity: 1.1,
-      value: "$1200.50",
-      change: "-$89.76 (-$12.34)",
-    },
+  ]);
 
-    {
-      name: "Tesla",
-      symbol: "TSLA",
-      quantity: 1.1,
-      value: "$1200.50",
-      change: "-$89.76 (-$12.34)",
-    },
+  function fetchAssets() {
+    const token = Cookies.get("token");
 
-    {
-      name: "Tesla",
-      symbol: "TSLA",
-      quantity: 1.1,
-      value: "$1200.50",
-      change: "-$89.76 (-$12.34)",
-    },
-
-    {
-      name: "Tesla",
-      symbol: "TSLA",
-      quantity: 1.1,
-      value: "$1200.50",
-      change: "-$89.76 (-$12.34)",
-    },
-
-    {
-      name: "Tesla",
-      symbol: "TSLA",
-      quantity: 1.1,
-      value: "$1200.50",
-      change: "-$89.76 (-$12.34)",
-    },
-
-    {
-      name: "Tesla",
-      symbol: "TSLA",
-      quantity: 1.1,
-      value: "$1200.50",
-      change: "-$89.76 (-$12.34)",
-    },
-
-    {
-      name: "Tesla",
-      symbol: "TSLA",
-      quantity: 1.1,
-      value: "$1200.50",
-      change: "-$89.76 (-$12.34)",
-    },
-
-    {
-      name: "Tesla",
-      symbol: "TSLA",
-      quantity: 1.1,
-      value: "$1200.50",
-      change: "-$89.76 (-$12.34)",
-    },
-
-    {
-      name: "Tesla",
-      symbol: "TSLA",
-      quantity: 1.1,
-      value: "$1200.50",
-      change: "-$89.76 (-$12.34)",
-    },
-
-    {
-      name: "Tesla",
-      symbol: "TSLA",
-      quantity: 1.1,
-      value: "$1200.50",
-      change: "-$89.76 (-$12.34)",
-    },
-
-    {
-      name: "Tesla",
-      symbol: "TSLA",
-      quantity: 1.1,
-      value: "$1200.50",
-      change: "-$89.76 (-$12.34)",
-    },
-
-    {
-      name: "Tesla",
-      symbol: "TSLA",
-      quantity: 1.1,
-      value: "$1200.50",
-      change: "-$89.76 (-$12.34)",
-    },
-  ];
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/assets/allWeb`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      credentials: "include",
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setAssets(data.data);
+        console.log(data.data)
+      });
+  }
 
   return (
     <div className="investments bg-white p-4 rounded shadow max-h-96 overflow-y-auto">
@@ -148,16 +47,13 @@ function Investments({ userData }: any) {
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-200">
-          {investmentData.map((asset, index) => (
+          {assets.map((asset, index) => (
             <tr key={index}>
-              <td className="px-4 py-2">{asset.name}</td>
-              <td className="px-4 py-2">{asset.symbol}</td>
+              <td className="px-4 py-2">{asset.asset_name}</td>
+              <td className="px-4 py-2">{asset.asset_symbol}</td>
               <td className="px-4 py-2">{asset.quantity}</td>
-              <td className="px-4 py-2">{asset.value}</td>
+              <td className="px-4 py-2">${asset.buy_price}</td>
               <td
-                className={`px-4 py-2 ${
-                  asset.change.includes("+") ? "text-green-500" : "text-red-500"
-                }`}
               >
                 {asset.change}
               </td>

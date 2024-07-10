@@ -1,104 +1,31 @@
-import React from "react";
-
+import React, { useEffect, useState } from "react";
+import Cookie from "js-cookie";
 function Orders({ userData }: any) {
-  const orderData = [
-    {
-      name: "NVIDIA",
-      symbol: "NVDA",
-      quantity: 1.54,
-      date: "03/04/2024",
-      type: "BUY",
-      status: "OK",
-    },
-    {
-      name: "APPLE",
-      symbol: "AAPL",
-      quantity: 2,
-      date: "19/03/2024",
-      type: "SELL",
-      status: "PENDING",
-    },
-    {
-      name: "APPLE",
-      symbol: "AAPL",
-      quantity: 2,
-      date: "19/03/2024",
-      type: "SELL",
-      status: "PENDING",
-    },
+  const [orderData, setOrderData] = useState([{}] as any);
 
-    {
-      name: "APPLE",
-      symbol: "AAPL",
-      quantity: 2,
-      date: "19/03/2024",
-      type: "SELL",
-      status: "PENDING",
-    },
+  useEffect(() => {
+    fetchOrders();
+  }, []);
 
-    {
-      name: "APPLE",
-      symbol: "AAPL",
-      quantity: 2,
-      date: "19/03/2024",
-      type: "SELL",
-      status: "PENDING",
-    },
+  useEffect(() => {
+    console.log(orderData);
+  }, [orderData]);
 
-    {
-      name: "APPLE",
-      symbol: "AAPL",
-      quantity: 2,
-      date: "19/03/2024",
-      type: "SELL",
-      status: "PENDING",
-    },
-
-    {
-      name: "APPLE",
-      symbol: "AAPL",
-      quantity: 2,
-      date: "19/03/2024",
-      type: "SELL",
-      status: "PENDING",
-    },
-
-    {
-      name: "APPLE",
-      symbol: "AAPL",
-      quantity: 2,
-      date: "19/03/2024",
-      type: "SELL",
-      status: "PENDING",
-    },
-
-    {
-      name: "APPLE",
-      symbol: "AAPL",
-      quantity: 2,
-      date: "19/03/2024",
-      type: "SELL",
-      status: "PENDING",
-    },
-
-    {
-      name: "APPLE",
-      symbol: "AAPL",
-      quantity: 2,
-      date: "19/03/2024",
-      type: "SELL",
-      status: "PENDING",
-    },
-
-    {
-      name: "APPLE",
-      symbol: "AAPL",
-      quantity: 2,
-      date: "19/03/2024",
-      type: "SELL",
-      status: "PENDING",
-    },
-  ];
+ async function fetchOrders() {
+    const token = Cookie.get("token");
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/orders/get`, {
+    method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      credentials: "include",
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setOrderData(data.data);
+      });
+  }
 
   return (
     <div className="orders bg-white p-4 rounded shadow max-h-96 overflow-y-auto">
@@ -115,16 +42,16 @@ function Orders({ userData }: any) {
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-200">
-          {orderData.map((order, index) => (
+          {orderData.map((order: any, index: number) => (
             <tr key={index}>
-              <td className="px-4 py-2">{order.name}</td>
-              <td className="px-4 py-2">{order.symbol}</td>
+              <td className="px-4 py-2">{order.asset?.asset_name}</td>
+              <td className="px-4 py-2">{order.asset?.asset_symbol}</td>
               <td className="px-4 py-2">{order.quantity}</td>
-              <td className="px-4 py-2">{order.date}</td>
+              <td className="px-4 py-2">{order.createdAt}</td>
               <td className="px-4 py-2">{order.type}</td>
               <td
                 className={`px-4 py-2 ${
-                  order.status === "OK" ? "text-green-500" : "text-yellow-500"
+                  order.status === "filled" ? "text-green-500" : "text-yellow-500"
                 }`}
               >
                 {order.status}
