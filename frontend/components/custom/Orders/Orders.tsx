@@ -3,18 +3,10 @@ import Cookie from "js-cookie";
 function Orders({ userData }: any) {
   const [orderData, setOrderData] = useState([{}] as any);
 
-  useEffect(() => {
-    fetchOrders();
-  }, []);
-
-  useEffect(() => {
-    console.log(orderData);
-  }, [orderData]);
-
- async function fetchOrders() {
+  async function fetchOrders() {
     const token = Cookie.get("token");
     fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/orders/get`, {
-    method: "GET",
+      method: "GET",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
@@ -26,6 +18,14 @@ function Orders({ userData }: any) {
         setOrderData(data.data);
       });
   }
+
+  useEffect(() => {
+    fetchOrders();
+  }, []);
+
+  useEffect(() => {
+    console.log(orderData);
+  }, [orderData]);
 
   return (
     <div className="orders bg-white p-4 rounded shadow max-h-96 overflow-y-auto">
@@ -51,7 +51,9 @@ function Orders({ userData }: any) {
               <td className="px-4 py-2">{order.type}</td>
               <td
                 className={`px-4 py-2 ${
-                  order.status === "filled" ? "text-green-500" : "text-yellow-500"
+                  order.status === "filled"
+                    ? "text-green-500"
+                    : "text-yellow-500"
                 }`}
               >
                 {order.status}

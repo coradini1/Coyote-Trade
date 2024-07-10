@@ -1,6 +1,5 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
-import { useEffect, useState } from "react";
 
 interface StockDetailModalProps {
   isOpen: boolean;
@@ -19,36 +18,41 @@ interface StockDetailModalProps {
 }
 
 function StockDetailModal({ isOpen, onClose, stock }: StockDetailModalProps) {
-  if (!isOpen) return null;
   const [user, setUser] = useState<any>();
 
   useEffect(() => {
+    if (!isOpen) return; 
+
     async function fetchData() {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/user`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/user`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            credentials: "include",
+          }
+        );
+
+        const userData = await response.json();
+
+        if (
+          (userData?.user?.role !== "admin" && userData?.user?.role !== "user") ||
+          !userData
+        ) {
+          return (window.location.href = "/login");
         }
-      );
 
-      const userData = await response.json();
-
-      if (
-        (userData?.user?.role !== "admin" && userData?.user?.role !== "user") ||
-        !userData
-      ) {
-        return (window.location.href = "/login");
+        setUser(userData.user);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
       }
-
-      setUser(userData.user);
     }
 
     fetchData();
-  }, []);
+  }, [isOpen]);
 
   const handleBuy = () => {
     const token = Cookies.get("token");
@@ -77,6 +81,8 @@ function StockDetailModal({ isOpen, onClose, stock }: StockDetailModalProps) {
       }
     });
   };
+
+  if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50">
