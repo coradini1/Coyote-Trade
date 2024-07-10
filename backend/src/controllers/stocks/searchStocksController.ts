@@ -3,8 +3,9 @@ import { alpaca } from "../../client/alpaca"
 
 export async function searchStocksController(req: Request, res: Response) {
   const query = req.params.stock
+  console.log(query)
 
-  let stockData = {}
+  let stockData = []
 
   const stocks = await alpaca.getAssets({
     status: "active",
@@ -12,19 +13,16 @@ export async function searchStocksController(req: Request, res: Response) {
   })
 
   if (query) {
-    stockData = {
-      ...stockData,
-      data: stocks.find((stock: any) => stock.name.includes(query) || stock.symbol.includes(query))
-    }
+    stockData = stocks.filter((stock: any) => stock.name.includes(query) || stock.symbol.includes(query))
   }
 
-  if (!stockData) {
+  if (stockData.length === 0) {
     return res.status(404).json({
       message: "Stock not found"
     })
   }
 
   res.status(200).json({
-    stock: stockData
+    stocks: stockData
   })
 }

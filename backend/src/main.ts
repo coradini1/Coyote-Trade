@@ -11,6 +11,7 @@ import stocks from "./routes/stocks";
 import metrics from "./routes/metrics";
 import assets from "./routes/assets";
 import alerts from "./routes/alerts";
+import orders from "./routes/orders";
 
 // Server
 const app: Express = express();
@@ -20,7 +21,7 @@ const port = 3002;
 app.use(
   cors({
     credentials: true,
-    origin: "https://coyotetrade.com.br",
+    origin: "http://localhost:3000",
   })
 );
 app.use(cookieParser());
@@ -34,6 +35,7 @@ app.use("/api/user", user);
 app.use("/api/metrics", metrics);
 app.use("/api/assets", assets);
 app.use("/api/alerts", alerts);
+app.use("/api/orders", orders);
 
 app.listen(port, () => {
   console.log(`CoyoteTrade-API running at http://localhost:${port}`);
