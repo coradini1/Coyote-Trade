@@ -15,6 +15,7 @@ export default function Page() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [stocks, setStocks] = useState<any[]>([]);
   const [selectedStock, setSelectedStock] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     async function fetchData() {
@@ -45,6 +46,7 @@ export default function Page() {
   }, []);
 
   const handleSearch = async (query: string) => {
+    setLoading(true);
     const token = Cookies.get("token");
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/api/stocks/search/${query}`,
@@ -59,6 +61,7 @@ export default function Page() {
     );
 
     const data = await response.json();
+    setLoading(false);
 
     setStocks(data.stocks);
     setIsModalOpen(true);
@@ -70,8 +73,8 @@ export default function Page() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="flex justify-end mb-4">
-        <SearchBar onSearch={handleSearch} />
+      <div className="flex justify-center mb-4">
+        <SearchBar onSearch={handleSearch} loading={loading} />
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="md:col-span-2 space-y-4">
