@@ -7,7 +7,6 @@ import { db } from "../db/db";
 export async function userUpdateController(req: any, res: Response) {
   const { role, email, address, name, surname, birthdate, logged_user_role } =
     req.body.user;
-  console.log(logged_user_role);
 
   try {
     if (name)

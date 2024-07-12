@@ -22,7 +22,6 @@ export async function alertsCreateController(req: Request, res: Response) {
     });
   }
 
-  console.log(req.body);
   const { assetSymbol, targetPrice, lowerThreshold, assetId } = req.body;
 
   if (!assetSymbol || !targetPrice || !assetId) {

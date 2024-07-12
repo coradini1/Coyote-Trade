@@ -29,7 +29,6 @@ function Investments({ userData }: any) {
       .then((res) => res.json())
       .then((data) => {
         setAssets(data.data);
-        console.log(data.data)
       });
   }
 

@@ -1,6 +1,6 @@
 import React from "react";
 import { AiOutlineClose } from "react-icons/ai";
-import './ModalSearchBar.css'; // Create a CSS file for custom styles
+import './ModalSearchBar.css';
 
 interface ModalProps {
   isOpen: boolean;
@@ -15,8 +15,8 @@ function ModalSearchBar({ isOpen, onClose, children }: ModalProps) {
     <div className="modal-overlay">
       <div className="modal-content">
         <div className="modal-header">
-          <button onClick={onClose} className="close-button">
-            <AiOutlineClose size={20} />
+          <button onClick={onClose} className="text-red-500">
+            <AiOutlineClose />
           </button>
         </div>
         <div className="modal-body">

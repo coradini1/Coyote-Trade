@@ -28,7 +28,6 @@ function Modal({ onClose, userData }: any) {
   const { toast } = useToast();
   const [userRole, setUserRole] = useState("");
 
-  
   const [updateUserInfo, setUpdateUserInfo] = useState({
     logged_user_role: "",
     role: "",
@@ -49,7 +48,6 @@ function Modal({ onClose, userData }: any) {
     });
   };
 
-
   function handleUserRole() {
     const storedUser = localStorage.getItem("user");
     if (!storedUser) {
@@ -60,7 +58,6 @@ function Modal({ onClose, userData }: any) {
   }
 
   function handleSubmit(userEmail: string) {
-
     fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/user/update`, {
       method: "PATCH",
       headers: {
@@ -157,41 +154,41 @@ function Modal({ onClose, userData }: any) {
                   onChange={handleChange}
                 />
               </div>
-              { userRole === "admin"   && (
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="role" className="text-right text-white">
-                  Role
-                </Label>
-                <Select
-                  onValueChange={(event) => {
-                    setUpdateUserInfo({
-                      ...updateUserInfo,
-                      role: event,
-                    });
-                  }}
-                >
-                  <SelectTrigger className="w-[180px] focus:outline-none focus:ring-0 mt-3">
-                    <SelectValue placeholder={`${userData.role}`} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="admin">admin</SelectItem>
-                    <SelectItem value="user">user</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+              {userRole === "admin" && (
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="role" className="text-right text-white">
+                    Role
+                  </Label>
+                  <Select
+                    onValueChange={(event) => {
+                      setUpdateUserInfo({
+                        ...updateUserInfo,
+                        role: event,
+                      });
+                    }}
+                  >
+                    <SelectTrigger className="w-[180px] focus:outline-none focus:ring-0 mt-3">
+                      <SelectValue placeholder={`${userData.role}`} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="admin">admin</SelectItem>
+                      <SelectItem value="user">user</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               )}
-              { userRole === "admin"   && (
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="balance" className="text-right text-white">
-                  Balance
-                </Label>
-                <Input
-                  id="balance"
-                  defaultValue={userData?.balance}
-                  className="col-span-3"
-                  disabled={true}
-                />
-              </div>
+              {userRole === "admin" && (
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="balance" className="text-right text-white">
+                    Balance
+                  </Label>
+                  <Input
+                    id="balance"
+                    defaultValue={userData?.balance}
+                    className="col-span-3"
+                    disabled={true}
+                  />
+                </div>
               )}
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="createdAt" className="text-right text-white">
@@ -206,11 +203,7 @@ function Modal({ onClose, userData }: any) {
               </div>
             </div>
             <DialogFooter>
-            <Button
-                onClick={onClose}
-                variant="destructive"
-                className="mr-2"
-              >
+              <Button onClick={onClose} variant="destructive" className="mr-2">
                 CANCEL
               </Button>
               <Button

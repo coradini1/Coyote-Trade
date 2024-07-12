@@ -24,7 +24,6 @@ function Orders({ userData }: any) {
   }, []);
 
   useEffect(() => {
-    console.log(orderData);
   }, [orderData]);
 
   return (

@@ -15,7 +15,6 @@ function UserCard({ userData }: any) {
       `${process.env.NEXT_PUBLIC_API_URL}/api/stripe`
     );
     const data = await response.json();
-    console.log(data);
   };
 
   const closeModal = () => {
@@ -24,7 +23,6 @@ function UserCard({ userData }: any) {
   };
 
   const openModal = (userData: any) => {
-    console.log(userData);
     setSelectedUser(userData);
     setIsModalOpen(true);
   };

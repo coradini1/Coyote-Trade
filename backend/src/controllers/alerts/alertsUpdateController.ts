@@ -4,7 +4,6 @@ import { eq, and } from "drizzle-orm";
 import { alertsTable } from "../../db/schema";
 
 export async function alertsUpdateController(req: Request, res: Response) {
-  console.log(req.body); 
 
   const userEmail = req.user?.email;
   const { symbol, target_price, lower_threshold, asset_id } = req.body;
@@ -31,9 +30,7 @@ export async function alertsUpdateController(req: Request, res: Response) {
         message: "User not found",
       });
     }
-    console.log(asset_id);
     const alertTest = await db.query.alertsTable.findMany({});
-    console.log(alertTest);
 
     const alert = await db.query.alertsTable.findFirst({
       where: (alert, { and, eq }) =>
