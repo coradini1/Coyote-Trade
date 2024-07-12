@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
+import { AiOutlineClose } from "react-icons/ai";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 
 interface StockDetailModalProps {
   isOpen: boolean;
@@ -15,46 +19,48 @@ interface StockDetailModalProps {
     founded: number;
     industry: string;
   };
+  userShares: any;
+  closeSearchModal: () => void; 
 }
 
-function StockDetailModal({ isOpen, onClose, stock }: StockDetailModalProps) {
+function StockDetailModal({
+  isOpen,
+  onClose,
+  stock,
+  userShares,
+  closeSearchModal, 
+}: StockDetailModalProps) {
   const [user, setUser] = useState<any>();
 
   useEffect(() => {
-    if (!isOpen) return; 
-
+    if (!isOpen) return;
     async function fetchData() {
-      try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/user`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            credentials: "include",
-          }
-        );
-
-        const userData = await response.json();
-
-        if (
-          (userData?.user?.role !== "admin" && userData?.user?.role !== "user") ||
-          !userData
-        ) {
-          return (window.location.href = "/login");
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/user`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
         }
+      );
 
-        setUser(userData.user);
-      } catch (error) {
-        console.error("Error fetching user data:", error);
+      const userData = await response.json();
+
+      if (
+        (userData?.user?.role !== "admin" && userData?.user?.role !== "user") ||
+        !userData
+      ) {
+        return (window.location.href = "/login");
       }
+      setUser(userData.user);
     }
 
     fetchData();
   }, [isOpen]);
 
-  const handleBuy = () => {
+  const handleOrder = (side: "buy" | "sell") => {
     const token = Cookies.get("token");
     const quantity = Number(
       (document.querySelector("input[type=number]") as HTMLInputElement).value
@@ -70,14 +76,17 @@ function StockDetailModal({ isOpen, onClose, stock }: StockDetailModalProps) {
       body: JSON.stringify({
         symbol: stock.symbol,
         qty: quantity,
-        side: "buy",
+        side,
         type: "market",
         time_in_force: "day",
       }),
     }).then((res) => {
       if (res.ok) {
-        alert("Order placed successfully");
-        onClose();
+        toast.success("Order placed successfully");
+        setTimeout(() => {
+          closeSearchModal();
+          onClose();
+        }, 3000);
       }
     });
   };
@@ -85,38 +94,53 @@ function StockDetailModal({ isOpen, onClose, stock }: StockDetailModalProps) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center z-50">
-      <div className="bg-white p-6 rounded shadow-lg">
+    <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-800 bg-opacity-50">
+      <ToastContainer />
+      <div className="bg-white p-6 rounded shadow-lg w-80">
         <div className="flex justify-between items-center">
           <h2 className="text-xl font-bold">{stock.name}</h2>
           <button onClick={onClose} className="text-red-500">
-            X
+            <AiOutlineClose />
           </button>
         </div>
         <p className="text-gray-500">{stock.symbol}</p>
-        {/* <p className="text-gray-500">${stock.price.toFixed(2)}</p> */}
-        {/* <p className={stock.change >= 0 ? "text-green-500" : "text-red-500"}>
-          {stock.change >= 0
-            ? `+${stock.change.toFixed(2)}`
-            : stock.change.toFixed(2)}
-          %
-        </p> */}
-        {/* <p className="text-gray-500">Market Cap: {stock.marketCap}</p>
-        <p className="text-gray-500">Revenue: {stock.revenue}</p>
-        <p className="text-gray-500">Volume: {stock.volume}</p>
-        <p className="text-gray-500">Founded: {stock.founded}</p>
-        <p className="text-gray-500">Industry: {stock.industry}</p> */}
         <input
           type="number"
           placeholder="Quantity"
           className="w-full p-2 border rounded mt-4"
         />
-        <button
-          onClick={handleBuy}
-          className="bg-blue-500 text-white p-2 rounded w-full mt-4"
-        >
-          Buy
-        </button>
+        <div className="flex justify-between mt-4">
+          <button
+            onClick={() => handleOrder("buy")}
+            className="text-white p-2 rounded w-full mr-2"
+            style={{ backgroundColor: "#7287FD" }}
+          >
+            Buy
+          </button>
+
+          {userShares && (
+            <button
+              onClick={() => handleOrder("sell")}
+              className="p-2 rounded w-full ml-2"
+              style={{
+                backgroundColor: "#FF4C4C",
+                color: "white",
+                cursor: userShares.quantity > 0 ? "pointer" : "not-allowed",
+              }}
+              disabled={userShares.quantity <= 0}
+            >
+              Sell
+            </button>
+          )}
+        </div>
+        {userShares && (
+          <p className="mt-4 text-gray-500 text-center">
+            Your shares: {userShares.quantity}
+          </p>
+        )}
+        <p className="mt-4 text-gray-500 text-center">
+          Your balance: ${user?.balance}
+        </p>
       </div>
     </div>
   );

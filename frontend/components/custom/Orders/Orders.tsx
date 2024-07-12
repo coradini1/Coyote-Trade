@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Cookie from "js-cookie";
-function Orders({ userData }: any) {
+function Orders() {
   const [orderData, setOrderData] = useState([{}] as any);
 
   async function fetchOrders() {

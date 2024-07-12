@@ -34,7 +34,6 @@ function Table({ columns, rows }: any) {
   const [selectedUser, setSelectedUser] = useState(null);
 
   useEffect(() => {
-    console.log(rows, columns);
   }, [rows, columns]);
 
   const openModal = (userData: any) => {

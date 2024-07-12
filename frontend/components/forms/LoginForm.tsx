@@ -4,7 +4,8 @@ import { motion } from "framer-motion";
 
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import { useToast } from "@/components/ui/use-toast";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import Link from "@/components/custom/Link/Link";
 import Input from "@/components/custom/Input/Input";
@@ -25,7 +26,6 @@ function LoginForm({ item }: any) {
     persist: false,
   });
 
-  const { toast } = useToast();
 
   async function handleForm(e: React.FormEvent) {
     e.preventDefault();
@@ -48,16 +48,18 @@ function LoginForm({ item }: any) {
 
       document.cookie = `token=${data.token}; path=/;`;
 
-      toast({
-        title: data.type === "success" ? "Success" : "Error",
-        description: data.message,
-      });
 
+      if (!response.ok) {
+        setLoading(false);
+        throw new Error("Login failed. Please try again.");
+      }
       if (data.type === "success") {
         localStorage.setItem('user', data.user); 
         window.location.href = "/admin";
       }
     } catch (error) {
+      toast.error("Login failed. Please try again.");
+
       console.log(error);
     }
   }
@@ -66,6 +68,8 @@ function LoginForm({ item }: any) {
       onSubmit={(e: React.FormEvent) => handleForm(e)}
       className="mt-10 flex flex-col gap-6"
     >
+      <ToastContainer />
+
       <Input
         variantItem={item}
         type="email"

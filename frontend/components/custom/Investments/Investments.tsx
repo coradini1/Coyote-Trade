@@ -1,19 +1,25 @@
 import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 
-function Investments({ userData }: any) {
+interface Asset {
+  asset_name: string;
+  asset_symbol: string;
+  quantity: number;
+  buy_price: number;
+  change: string;
+}
+
+interface InvestmentsProps {
+  updateCount: number;
+}
+
+function Investments({ updateCount }: InvestmentsProps) {
+  const [assets, setAssets] = useState<Asset[]>([]);
+  const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     fetchAssets();
-  }, []);
-  const [assets, setAssets] = useState([
-    {
-      asset_name: "",
-      asset_symbol: "",
-      quantity: 0,
-      buy_price: 0,
-      change: "",
-    },
-  ]);
+  }, [updateCount]);
 
   function fetchAssets() {
     const token = Cookies.get("token");
@@ -29,6 +35,9 @@ function Investments({ userData }: any) {
       .then((res) => res.json())
       .then((data) => {
         setAssets(data.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching assets:", error);
       });
   }
 
@@ -52,10 +61,7 @@ function Investments({ userData }: any) {
               <td className="px-4 py-2">{asset.asset_symbol}</td>
               <td className="px-4 py-2">{asset.quantity}</td>
               <td className="px-4 py-2">${asset.buy_price}</td>
-              <td
-              >
-                {asset.change}
-              </td>
+              <td>{asset.change}</td>
             </tr>
           ))}
         </tbody>
