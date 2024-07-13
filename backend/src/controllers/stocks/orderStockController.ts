@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { alpaca } from "../../client/alpaca";
 import { db } from "../../db/db";
-import { ordersTable, assetsTable } from "../../db/schema";
+import { ordersTable, assetsTable, usersTable } from "../../db/schema";
 import { sql } from "drizzle-orm";
 
 type OrderStockRequest = {
@@ -10,12 +10,11 @@ type OrderStockRequest = {
   side: "buy" | "sell";
   type: "market" | "limit" | "stop" | "stop_limit" | "trailing_stop";
   time_in_force: string;
+  stock: JSON;
 };
 
 export async function orderStockController(req: Request, res: Response) {
-  const { symbol, qty, side, type, time_in_force } =
-    req.body as OrderStockRequest;
-
+  const { symbol, qty, side, type, time_in_force } = req.body as OrderStockRequest;
   const userEmail = req.user?.email;
 
   if (!userEmail) {
@@ -30,19 +29,44 @@ export async function orderStockController(req: Request, res: Response) {
     });
   }
 
-  // let qtyConverted;
-  // if (typeof qty !== "string") {
-  //   qtyConverted = String(qty);
-  // }
-
   try {
+    const options = {
+      method: "GET",
+      headers: {
+        accept: "application/json",
+        "APCA-API-KEY-ID": `${process.env.API_KEY_ID}`,
+        "APCA-API-SECRET-KEY": `${process.env.API_SECRET_KEY}`,
+      },
+    };
+    const dataStockPrices = fetch(
+      `https://data.alpaca.markets/v2/stocks/quotes/latest?symbols=${symbol}&feed=iex`,
+      options
+    )
+      .then((response) => response.json())
+      .then((data) => data);
+    const stockPrices = await dataStockPrices;
+
+    if (!stockPrices.quotes[symbol]?.ap && !stockPrices.quotes[symbol]?.bp) {
+      return res.status(400).json({
+        message: "Failed to retrieve asset buy price",
+      });
+    }
+
     const user = await db.query.usersTable.findFirst({
       where: (user, { eq }) => eq(user.email, userEmail),
     });
-
     if (!user) {
       return res.status(404).json({
         message: "User not found",
+      });
+    }
+
+    const balance = user.balance;
+    let quantityPrice = parseInt(qty, 10) * (stockPrices.quotes[symbol]?.ap || stockPrices.quotes[symbol]?.bp);
+
+    if (side === "buy" && quantityPrice > balance) {
+      return res.status(400).json({
+        message: "Insufficient balance",
       });
     }
 
@@ -51,18 +75,39 @@ export async function orderStockController(req: Request, res: Response) {
     });
 
     if (asset) {
-      if (side === 'buy') {
-        await db.update(assetsTable)
+      if (side === "buy") {
+        await db
+          .update(assetsTable)
           .set({ quantity: asset.quantity + parseInt(qty, 10) })
           .where(sql`id = ${asset.id}`)
           .execute();
+        await db
+          .update(usersTable)
+          .set({ balance: balance - quantityPrice })
+          .where(sql`id = ${user.id}`)
+          .execute();
+      } else if (side === "sell" && parseInt(qty, 10) <= asset.quantity) {
+        await db
+          .update(assetsTable)
+          .set({ quantity: asset.quantity - parseInt(qty, 10) })
+          .where(sql`id = ${asset.id}`)
+          .execute();
+        await db
+          .update(usersTable)
+          .set({ balance: balance + quantityPrice })
+          .where(sql`id = ${user.id}`)
+          .execute();
+      } else {
+        return res.status(400).json({
+          message: "Insufficient asset quantity",
+        });
       }
-    } else {
+    } else if (side === "buy") {
       const newAsset = {
         user_id: user.id,
         asset_name: symbol,
         asset_symbol: symbol,
-        buy_price: 0,
+        buy_price: stockPrices.quotes[symbol]?.ap || stockPrices.quotes[symbol]?.bp,
         quantity: parseInt(qty, 10),
       };
       const insertedAssets = await db
@@ -70,6 +115,16 @@ export async function orderStockController(req: Request, res: Response) {
         .values(newAsset)
         .returning();
       asset = insertedAssets[0];
+
+      await db
+        .update(usersTable)
+        .set({ balance: balance - quantityPrice })
+        .where(sql`id = ${user.id}`)
+        .execute();
+    } else {
+      return res.status(400).json({
+        message: "No assets to sell",
+      });
     }
 
     const order = await alpaca.createOrder({
@@ -85,14 +140,12 @@ export async function orderStockController(req: Request, res: Response) {
       asset_id: asset.id,
       quantity: parseInt(order.qty, 10),
       type: order.side,
-      amount: parseInt(order.qty, 10) * (order.filled_avg_price || 0),
+      amount: quantityPrice,
       settle_date: order.settled_at || new Date().toISOString(),
       status: order.status,
     });
 
-    res.status(200).json({
-      order,
-    });
+    res.status(200).json({ order });
   } catch (error) {
     console.error("Error:", error);
     res.status(500).json({
