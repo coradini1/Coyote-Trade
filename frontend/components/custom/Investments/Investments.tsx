@@ -60,7 +60,7 @@ function Investments({ updateCount }: InvestmentsProps) {
               <td className="px-4 py-2">{asset.asset_name}</td>
               <td className="px-4 py-2">{asset.asset_symbol}</td>
               <td className="px-4 py-2">{asset.quantity}</td>
-              <td className="px-4 py-2">${asset.buy_price}</td>
+              <td className="px-4 py-2">${asset.buy_price * asset.quantity}</td>
               <td>{asset.change}</td>
             </tr>
           ))}

@@ -4,7 +4,6 @@ import { AiOutlineClose } from "react-icons/ai";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-
 interface StockDetailModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -20,7 +19,9 @@ interface StockDetailModalProps {
     industry: string;
   };
   userShares: any;
-  closeSearchModal: () => void; 
+  closeSearchModal: () => void;
+  user: any;
+  setUser: (user: any) => void;
 }
 
 function StockDetailModal({
@@ -28,10 +29,10 @@ function StockDetailModal({
   onClose,
   stock,
   userShares,
-  closeSearchModal, 
+  closeSearchModal,
+  user,
+  setUser,
 }: StockDetailModalProps) {
-  const [user, setUser] = useState<any>();
-
   useEffect(() => {
     if (!isOpen) return;
     async function fetchData() {
@@ -80,13 +81,29 @@ function StockDetailModal({
         type: "market",
         time_in_force: "day",
       }),
-    }).then((res) => {
+    }).then(async (res) => {
       if (res.ok) {
+        const updatedUserResponse = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/user`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            credentials: "include",
+          }
+        );
+        const updatedUserData = await updatedUserResponse.json();
+        setUser(updatedUserData.user);
+
         toast.success("Order placed successfully");
         setTimeout(() => {
           closeSearchModal();
           onClose();
         }, 3000);
+      }
+      if(res.status === 400) {
+        toast.error("Insufficient balance");
       }
     });
   };

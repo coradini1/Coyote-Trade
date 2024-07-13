@@ -35,6 +35,7 @@ function Orders() {
             <th className="px-4 py-2 text-left">Name</th>
             <th className="px-4 py-2 text-left">Symbol</th>
             <th className="px-4 py-2 text-left">Quantity</th>
+            <th className="px-4 py-2 text-left">Buy Price</th>
             <th className="px-4 py-2 text-left">Date</th>
             <th className="px-4 py-2 text-left">Type</th>
             <th className="px-4 py-2 text-left">Status</th>
@@ -46,6 +47,7 @@ function Orders() {
               <td className="px-4 py-2">{order.asset?.asset_name}</td>
               <td className="px-4 py-2">{order.asset?.asset_symbol}</td>
               <td className="px-4 py-2">{order.quantity}</td>
+              <td className="px-4 py-2">${order.amount}</td>
               <td className="px-4 py-2">{order.createdAt}</td>
               <td className="px-4 py-2">{order.type}</td>
               <td

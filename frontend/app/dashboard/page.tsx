@@ -20,7 +20,7 @@ export default function Page() {
   const [loading, setLoading] = useState(false);
   const [assets, setAssets] = useState<any[]>([]);
   const [filteredAssets, setFilteredAssets] = useState<any[]>([]);
-  const [updateCount, setUpdateCount] = useState(0); 
+  const [updateCount, setUpdateCount] = useState(0);
 
   useEffect(() => {
     fetchAssets();
@@ -112,7 +112,7 @@ export default function Page() {
 
   const closeSearchModal = () => {
     setIsModalOpen(false);
-    setUpdateCount((prevCount) => prevCount + 1); 
+    setUpdateCount((prevCount) => prevCount + 1);
   };
 
   return (
@@ -123,21 +123,24 @@ export default function Page() {
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="md:col-span-2 space-y-4">
-          <Portfolio />
+          <Portfolio key={updateCount} />
         </div>
         <div className="md:col-span-1 space-y-4">
-          <UserCard userData={user} />
+          <UserCard userData={user} key={updateCount} updateCount={0} />
         </div>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
         <div className="space-y-4">
-          <Investments key={updateCount} updateCount={0} /> 
+          <Investments key={updateCount} updateCount={0} />
         </div>
         <div className="space-y-4">
-          <Orders key={updateCount} /> 
+          <Orders key={updateCount} />
         </div>
       </div>
-      <ModalSearchBar isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+      <ModalSearchBar
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      >
         <StockList stocks={stocks} onStockClick={handleStockClick} />
       </ModalSearchBar>
       {selectedStock && (
@@ -146,7 +149,9 @@ export default function Page() {
           onClose={() => setSelectedStock(null)}
           stock={selectedStock}
           userShares={filteredAssets[0]}
-          closeSearchModal={closeSearchModal} 
+          closeSearchModal={closeSearchModal}
+          user={user}
+          setUser={setUser}
         />
       )}
     </div>
