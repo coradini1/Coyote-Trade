@@ -1,0 +1,11 @@
+{
+  "version": "1.0",
+  "apis": [
+    {
+      "identifier": "testalpacadocs",
+      "source": "@testalpacadocs/v1.1#h2vi10ly412dq8",
+      "integrity": "sha512-Cl5x1gdZM4zPXGzV2ow2RdN7a7hhfnaSUJqvQnafah1C99aswzbApvHfPtb66TeGwjvNwKtRKTWlpbkKXzaN1A==",
+      "installerVersion": "6.1.2"
+    }
+  ]
+}

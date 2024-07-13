@@ -3,19 +3,11 @@ import React, { useEffect, useState } from "react";
 import Modal from "../Modal/Modal";
 import { IoLogOutOutline } from 'react-icons/io5';
 
-
-function UserCard({ userData }: any) {
+function UserCard({ userData, updateCount }: any) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
 
-  useEffect(() => {}, [userData]);
-
-  const fetchStripePublic = async () => {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/stripe`
-    );
-    const data = await response.json();
-  };
+  useEffect(() => {}, [updateCount]);
 
   const closeModal = () => {
     setIsModalOpen(false);
@@ -62,7 +54,6 @@ function UserCard({ userData }: any) {
         <button
           className=" text-white px-4 py-1 rounded"
           style={{ backgroundColor: "#7287FD" }}
-          onClick={fetchStripePublic}
         >
           Deposit
         </button>
@@ -73,20 +64,20 @@ function UserCard({ userData }: any) {
           Withdraw
         </button>
         <button
-  onClick={() => {
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/user/logout`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-    }).then(() => {
-      window.location.href = "/login";
-    });
-  }}
->
-  <IoLogOutOutline size={30} /> 
-</button>
+          onClick={() => {
+            fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/user/logout`, {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              credentials: "include",
+            }).then(() => {
+              window.location.href = "/login";
+            });
+          }}
+        >
+          <IoLogOutOutline size={30} />
+        </button>
         {isModalOpen && (
           <Modal
             isOpen={isModalOpen}
