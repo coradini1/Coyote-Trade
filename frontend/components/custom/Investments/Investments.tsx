@@ -1,3 +1,4 @@
+"use client";
 import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 
@@ -16,6 +17,48 @@ interface InvestmentsProps {
 function Investments({ updateCount }: InvestmentsProps) {
   const [assets, setAssets] = useState<Asset[]>([]);
   const [loading, setLoading] = useState(false);
+  const [combinedData, setCombinedData] = useState<Asset[]>([]);
+
+  useEffect(() => {
+    const fetchStockPrices = async () => {
+      setLoading(true);
+      const promises = assets.map(async (asset) => {
+        const stockPrice = await fetchStockPrice(asset.asset_symbol);
+        return { ...asset, change: stockPrice };
+      });
+      const data = await Promise.all(promises);
+      setCombinedData(data);
+      setLoading(false);
+    };
+
+    if (assets.length > 0) {
+      fetchStockPrices();
+    }
+  }, [assets]);
+
+  function calculatePercentageDifference(oldPrice: number, newPrice: number) {
+    if (oldPrice === 0) {
+      throw new Error("Old price cannot be zero");
+    }
+    const difference = newPrice - oldPrice;
+    const percentageDifference = (difference / oldPrice) * 100;
+    return percentageDifference.toFixed(2);
+  }
+
+  async function fetchStockPrice(symbol: string) {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/assets/get-stock-price/${symbol}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      }
+    );
+    const stockPrice = await response.json();
+    return stockPrice.data;
+  }
 
   useEffect(() => {
     fetchAssets();
@@ -44,28 +87,40 @@ function Investments({ updateCount }: InvestmentsProps) {
   return (
     <div className="investments bg-white p-4 rounded shadow max-h-96 overflow-y-auto">
       <h2 className="text-lg font-bold">Investments</h2>
-      <table className="min-w-full bg-white divide-y divide-gray-200">
-        <thead>
-          <tr className="bg-gray-100">
-            <th className="px-4 py-2 text-left">Name</th>
-            <th className="px-4 py-2 text-left">Symbol</th>
-            <th className="px-4 py-2 text-left">Quantity</th>
-            <th className="px-4 py-2 text-left">Value</th>
-            <th className="px-4 py-2 text-left">Change</th>
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-gray-200">
-          {assets.map((asset, index) => (
-            <tr key={index}>
-              <td className="px-4 py-2">{asset.asset_name}</td>
-              <td className="px-4 py-2">{asset.asset_symbol}</td>
-              <td className="px-4 py-2">{asset.quantity}</td>
-              <td className="px-4 py-2">${asset.buy_price * asset.quantity}</td>
-              <td>{asset.change}</td>
+      {loading ? (
+        <p>Loading...</p>
+      ) : (
+        <table className="min-w-full bg-white divide-y divide-gray-200">
+          <thead>
+            <tr className="bg-gray-100">
+              <th className="px-4 py-2 text-left">Name</th>
+              <th className="px-4 py-2 text-left">Symbol</th>
+              <th className="px-4 py-2 text-left">Quantity</th>
+              <th className="px-4 py-2 text-left">Value</th>
+              <th className="px-4 py-2 text-left">Change</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody className="divide-y divide-gray-200">
+            {combinedData.map((asset, index) => (
+              <tr key={index}>
+                <td className="px-4 py-2">{asset.asset_name}</td>
+                <td className="px-4 py-2">{asset.asset_symbol}</td>
+                <td className="px-4 py-2">{asset.quantity}</td>
+                <td className="px-4 py-2">
+                  ${(asset.buy_price * asset.quantity).toFixed(2)}
+                </td>
+                <td className="px-4 py-2">
+                  {calculatePercentageDifference(
+                    asset.buy_price,
+                    Number(asset.change)
+                  )}
+                  %
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
     </div>
   );
 }
