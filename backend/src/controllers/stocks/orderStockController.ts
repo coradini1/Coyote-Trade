@@ -97,6 +97,18 @@ export async function orderStockController(req: Request, res: Response) {
           .set({ balance: balance + quantityPrice })
           .where(sql`id = ${user.id}`)
           .execute();
+          await db.insert(ordersTable).values({
+            user_id: user.id,
+            asset_id: asset.id,
+            quantity: parseInt(qty, 10),
+            type: side,
+            amount: quantityPrice,
+            settle_date: new Date().toISOString(),
+            status: "filled",
+          });
+        return res.status(200).json({
+          message: "Asset sold successfully",
+        });
       } else {
         return res.status(400).json({
           message: "Insufficient asset quantity",
