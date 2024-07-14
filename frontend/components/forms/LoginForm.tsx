@@ -59,6 +59,7 @@ function LoginForm({ item }: any) {
       }
     } catch (error) {
       toast.error("Login failed. Please try again.");
+      setLoading(false);
 
       console.log(error);
     }

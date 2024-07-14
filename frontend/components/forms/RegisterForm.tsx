@@ -100,6 +100,9 @@ function RegisterForm() {
       description: data.message,
       duration: 5000,
     });
+    if (data.type === "error") {
+      setLoading(false);
+    }
 
     if (data.type === "success") {
       setTimeout(() => {

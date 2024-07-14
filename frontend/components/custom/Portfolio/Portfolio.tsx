@@ -9,6 +9,9 @@ function Portfolio({ updateCount }: any) {
     fetchAssets();
   }, [updateCount]);
 
+  function formatNumber(value: number) {
+    return value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
 
   async function fetchAssets() {
     const token = Cookies.get("token");
@@ -34,7 +37,7 @@ function Portfolio({ updateCount }: any) {
   return (
     <div className="portfolio bg-white p-4 rounded shadow">
       <h2 className="text-lg font-bold">Portfolio</h2>
-      <p>${portfolioValue}</p>
+      <p>${formatNumber(portfolioValue)}</p>
       <p className="text-green-500">$0 (0%) last week</p>
     </div>
   );

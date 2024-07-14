@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Cookie from "js-cookie";
 function Orders() {
   const [orderData, setOrderData] = useState([{}] as any);
+  const [stockPrices, setStockPrices] = useState<any>();
 
   async function fetchOrders() {
     const token = Cookie.get("token");
@@ -23,8 +24,7 @@ function Orders() {
     fetchOrders();
   }, []);
 
-  useEffect(() => {
-  }, [orderData]);
+  useEffect(() => {}, [orderData]);
 
   return (
     <div className="orders bg-white p-4 rounded shadow max-h-96 overflow-y-auto">
@@ -42,12 +42,12 @@ function Orders() {
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-200">
-          {orderData.map((order: any, index: number) => (
+          {orderData?.map((order: any, index: number) => (
             <tr key={index}>
               <td className="px-4 py-2">{order.asset?.asset_name}</td>
               <td className="px-4 py-2">{order.asset?.asset_symbol}</td>
               <td className="px-4 py-2">{order.quantity}</td>
-              <td className="px-4 py-2">${order.amount}</td>
+              <td className="px-4 py-2">${order?.amount?.toFixed(2)}</td>
               <td className="px-4 py-2">{order.createdAt}</td>
               <td className="px-4 py-2">{order.type}</td>
               <td
