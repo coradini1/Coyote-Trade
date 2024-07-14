@@ -45,14 +45,16 @@ function StockDetailModal({
     if (stockQuantity < 1) {
       setInputError(true);
       setErrorInput("Quantity must be greater than 0");
-    } else if (stockQuantity * stockPrices > user?.balance) {
+    } else if (loading === "buy" && stockQuantity * stockPrices > user?.balance) {
       setInputError(true);
       setErrorInput("Insufficient balance");
+    } else if (loading === "sell" && stockQuantity > userShares.quantity) {
+      setInputError(true);
+      setErrorInput("Insufficient shares");
     } else {
       setInputError(false);
     }
-  }),
-    [stockQuantity];
+  }, [stockQuantity, stockPrices, loading, user, userShares]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -179,7 +181,10 @@ function StockDetailModal({
         )}
         <div className="flex justify-between mt-4">
           <button
-            onClick={() => handleOrder("buy")}
+            onClick={() => {
+              setLoading("buy");
+              handleOrder("buy");
+            }}
             className="flex items-center justify-center text-white p-2 rounded w-full mr-2 disabled:opacity-50 disabled:cursor-not-allowed"
             style={{ backgroundColor: "#7287FD" }}
             disabled={
@@ -197,7 +202,10 @@ function StockDetailModal({
 
           {userShares && (
             <button
-              onClick={() => handleOrder("sell")}
+              onClick={() => {
+                setLoading("sell");
+                handleOrder("sell");
+              }}
               className="flex items-center justify-center p-2 rounded w-full ml-2 disabled:opacity-50 disabled:cursor-not-allowed"
               style={{
                 backgroundColor: "#FF4C4C",
@@ -210,9 +218,6 @@ function StockDetailModal({
                 stockQuantity > userShares.quantity
               }
             >
-              {inputError && (
-                <p className="text-red-500 text-sm mt-1">{errorInput}</p>
-              )}
               {loading === "sell" ? (
                 <Ring size={20} lineWeight={5} speed={2} color="white" />
               ) : (
