@@ -30,11 +30,13 @@ function Modal({ onClose, userData }: any) {
 
   const [updateUserInfo, setUpdateUserInfo] = useState({
     logged_user_role: "",
+    email: "",
     role: "",
     name: "",
     surname: "",
     address: "",
     birthdate: "",
+    default_email: "",
   });
 
   useEffect(() => {
@@ -66,21 +68,33 @@ function Modal({ onClose, userData }: any) {
       body: JSON.stringify({
         user: {
           logged_user_role: userRole,
-          email: userEmail,
+          email: updateUserInfo.email,
           role: updateUserInfo.role,
           name: updateUserInfo.name,
           surname: updateUserInfo.surname,
           address: updateUserInfo.address,
           birthdate: updateUserInfo.birthdate,
+          default_email: userEmail,
         },
       }),
       credentials: "include",
-    }).then(() => {
+    }).then((res) => {
+      if (res.status == 404) {
+        toast({
+          title: "Error",
+          description: "Email already exists.",
+          duration: 3000,
+        });
+        return;
+      }
       toast({
         title: "Success",
         description: "User updated successfully",
-        duration: 5000,
+        duration: 3000,
       });
+      setTimeout(() => {
+        window.location.href = "/login";
+      }, 3000);
     });
   }
 
@@ -129,7 +143,7 @@ function Modal({ onClose, userData }: any) {
                   id="email"
                   defaultValue={userData?.email}
                   className="col-span-3"
-                  disabled={true}
+                  onChange={handleChange}
                 />
               </div>{" "}
               <div className="grid grid-cols-4 items-center gap-4">
