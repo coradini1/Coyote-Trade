@@ -2,6 +2,8 @@
 import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 
+import Spinner from "@/components/custom/Spinner/Spinner";
+
 interface Asset {
   asset_name: string;
   asset_symbol: string;
@@ -88,7 +90,7 @@ function Investments({ updateCount }: InvestmentsProps) {
     <div className="investments bg-white p-4 rounded shadow max-h-96 overflow-y-auto">
       <h2 className="text-lg font-bold">Investments</h2>
       {loading ? (
-        <p>Loading...</p>
+        <Spinner />
       ) : (
         <table className="min-w-full bg-white divide-y divide-gray-200">
           <thead>

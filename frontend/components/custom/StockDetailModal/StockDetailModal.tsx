@@ -36,7 +36,7 @@ function StockDetailModal({
 }: StockDetailModalProps) {
   const [loading, setLoading] = useState<"buy" | "sell" | null>(null);
   const symbol = stock.symbol;
-  const [stockPrices, setStockPrices] = useState<any>();
+  const [stockPrices, setStockPrices] = useState<any>(0);
   const [stockQuantity, setStockQuantity] = useState<number>(1);
   const [inputError, setInputError] = useState<boolean>(false);
   const [errorInput, setErrorInput] = useState<string>("");

@@ -49,7 +49,13 @@ function Orders() {
               <td className="px-4 py-2">{order.quantity}</td>
               <td className="px-4 py-2">${order?.amount?.toFixed(2)}</td>
               <td className="px-4 py-2">{order.createdAt}</td>
-              <td className="px-4 py-2">{order.type}</td>
+              <td
+                className={`px-4 py-2
+                ${order.type === "buy" ? "text-green-500" : "text-red-500"}
+                `}
+              >
+                {order.type}
+              </td>
               <td
                 className={`px-4 py-2 ${
                   order.status === "filled"

@@ -19,6 +19,13 @@ function UserCard({ userData, updateCount }: any) {
     setIsModalOpen(true);
   };
 
+  function formatNumber(value: number) {
+    if (isNaN(value)) {
+      return "0.00";
+    }
+    return value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
   return (
     <div className="user-card bg-white p-4 rounded shadow">
       <h2 className="text-2xl font-bold">
@@ -44,11 +51,11 @@ function UserCard({ userData, updateCount }: any) {
         <p style={{ color: "#A6ADC8" }} className="mr-1 text-2xl">
           Balance:
         </p>
-        <p className="mr-1 text-xl font-bold mt-1">${userData?.balance}</p>
+        <p className="mr-1 text-xl font-bold mt-1">${formatNumber(userData?.balance)}</p>
       </div>
       <div style={{ display: "flex", flexDirection: "row" }}>
         <p style={{ color: "#A6ADC8" }}>Cash Available:</p>
-        <p style={{ marginLeft: 5, color: "#585B70" }}>${userData?.balance}</p>
+        <p style={{ marginLeft: 5, color: "#585B70" }}>${formatNumber(userData?.balance)}</p>
       </div>
       <div className="flex space-x-2 mt-4">
         <button
