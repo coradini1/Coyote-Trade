@@ -14,7 +14,8 @@ type OrderStockRequest = {
 };
 
 export async function orderStockController(req: Request, res: Response) {
-  const { symbol, qty, side, type, time_in_force } = req.body as OrderStockRequest;
+  const { symbol, qty, side, type, time_in_force } =
+    req.body as OrderStockRequest;
   const userEmail = req.user?.email;
 
   if (!userEmail) {
@@ -62,7 +63,9 @@ export async function orderStockController(req: Request, res: Response) {
     }
 
     const balance = user.balance;
-    let quantityPrice = parseInt(qty, 10) * (stockPrices.quotes[symbol]?.ap || stockPrices.quotes[symbol]?.bp);
+    const quantityPrice =
+      ((stockPrices.quotes[symbol]?.ap + stockPrices.quotes[symbol]?.bp) / 2) *
+      parseInt(qty, 10);
 
     if (side === "buy" && quantityPrice > balance) {
       return res.status(400).json({
@@ -71,14 +74,21 @@ export async function orderStockController(req: Request, res: Response) {
     }
 
     let asset = await db.query.assetsTable.findFirst({
-      where: (asset, { and, eq }) => and(eq(asset.asset_symbol, symbol), eq(asset.user_id, user.id)),
+      where: (asset, { and, eq }) =>
+        and(eq(asset.asset_symbol, symbol), eq(asset.user_id, user.id)),
     });
 
     if (asset) {
       if (side === "buy") {
+        const newAvgPrice =
+          (asset.avg_price * asset.quantity + quantityPrice) /
+          (asset.quantity + parseInt(qty, 10));
         await db
           .update(assetsTable)
-          .set({ quantity: asset.quantity + parseInt(qty, 10) })
+          .set({
+            quantity: asset.quantity + parseInt(qty, 10),
+            avg_price: newAvgPrice,
+          })
           .where(sql`id = ${asset.id}`)
           .execute();
         await db
@@ -87,25 +97,35 @@ export async function orderStockController(req: Request, res: Response) {
           .where(sql`id = ${user.id}`)
           .execute();
       } else if (side === "sell" && parseInt(qty, 10) <= asset.quantity) {
+        const newQuantity = asset.quantity - parseInt(qty, 10);
         await db
           .update(assetsTable)
-          .set({ quantity: asset.quantity - parseInt(qty, 10) })
+          .set({ quantity: newQuantity })
           .where(sql`id = ${asset.id}`)
           .execute();
+
+        if (newQuantity === 0) {
+          await db
+            .update(assetsTable)
+            .set({ avg_price: undefined })
+            .where(sql`id = ${asset.id}`)
+            .execute();
+        }
+
         await db
           .update(usersTable)
           .set({ balance: balance + quantityPrice })
           .where(sql`id = ${user.id}`)
           .execute();
-          await db.insert(ordersTable).values({
-            user_id: user.id,
-            asset_id: asset.id,
-            quantity: parseInt(qty, 10),
-            type: side,
-            amount: quantityPrice,
-            settle_date: new Date().toISOString(),
-            status: "filled",
-          });
+        await db.insert(ordersTable).values({
+          user_id: user.id,
+          asset_id: asset.id,
+          quantity: parseInt(qty, 10),
+          type: side,
+          amount: quantityPrice,
+          settle_date: new Date().toISOString(),
+          status: "filled",
+        });
         return res.status(200).json({
           message: "Asset sold successfully",
         });
@@ -115,11 +135,13 @@ export async function orderStockController(req: Request, res: Response) {
         });
       }
     } else if (side === "buy") {
+      const averagePrice =
+        (stockPrices.quotes[symbol]?.ap + stockPrices.quotes[symbol]?.bp) / 2;
       const newAsset = {
         user_id: user.id,
         asset_name: symbol,
         asset_symbol: symbol,
-        buy_price: stockPrices.quotes[symbol]?.ap || stockPrices.quotes[symbol]?.bp,
+        avg_price: averagePrice,
         quantity: parseInt(qty, 10),
       };
       const insertedAssets = await db

@@ -29,7 +29,7 @@ export async function alertsAllController(req: Request, res: Response) {
       lower_threshold: sql`alerts.lower_threshold`,
       companyName: sql`assets.asset_name`,
       quantity: sql`assets.quantity`,
-      currentPrice: sql`assets.buy_price`,
+      currentPrice: sql`assets.avg_price`,
     })
     .from(sql`alerts`)
     .innerJoin(sql`assets`, sql`alerts.asset_id = assets.id`)

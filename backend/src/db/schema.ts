@@ -35,7 +35,7 @@ export const assetsTable = sqliteTable("assets", {
   user_id: integer("user_id").references(() => usersTable.id),
   asset_name: text("asset_name").notNull(),
   asset_symbol: text("asset_symbol").notNull(),
-  buy_price: integer("buy_price").notNull(),
+  avg_price: integer("avg_price").notNull(),
   quantity: integer("quantity").notNull(),
 });
 
