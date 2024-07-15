@@ -45,7 +45,10 @@ function StockDetailModal({
     if (stockQuantity < 1) {
       setInputError(true);
       setErrorInput("Quantity must be greater than 0");
-    } else if (loading === "buy" && stockQuantity * stockPrices > user?.balance) {
+    } else if (
+      loading === "buy" &&
+      stockQuantity * stockPrices > user?.balance
+    ) {
       setInputError(true);
       setErrorInput("Insufficient balance");
     } else if (loading === "sell" && stockQuantity > userShares.quantity) {
@@ -55,6 +58,13 @@ function StockDetailModal({
       setInputError(false);
     }
   }, [stockQuantity, stockPrices, loading, user, userShares]);
+
+  function formatNumber(value: number) {
+    return value.toLocaleString("en-US", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+  }
 
   useEffect(() => {
     if (!isOpen) return;
@@ -231,7 +241,7 @@ function StockDetailModal({
           <span className="font-bold">{stockQuantity}</span>
           {stockQuantity > 1 ? "shares" : "share"} for{" "}
           <span className="font-bold">
-            ${(stockPrices * stockQuantity).toFixed(2)}
+            ${formatNumber(stockQuantity * stockPrices)}
           </span>
         </p>
         {userShares && (
@@ -240,7 +250,8 @@ function StockDetailModal({
           </p>
         )}
         <p className="mt-4 text-gray-500 text-center">
-          Your balance: <span className="font-bold">${user?.balance}</span>
+          Your balance:{" "}
+          <span className="font-bold">${formatNumber(user?.balance)}</span>
         </p>
       </div>
     </div>

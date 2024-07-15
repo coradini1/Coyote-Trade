@@ -1,9 +1,53 @@
 import React from "react";
 import Cookies from "js-cookie";
 import { useState, useEffect } from "react";
+import { Line } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  LineElement,
+  PointElement,
+  LinearScale,
+  Title,
+  Tooltip,
+  Legend,
+  CategoryScale,
+} from "chart.js";
 
-function Portfolio({ updateCount }: any) {
-  const [portfolioValue, setPortfolioValue] = useState(0);
+ChartJS.register(
+  LineElement,
+  PointElement,
+  LinearScale,
+  Title,
+  Tooltip,
+  Legend,
+  CategoryScale
+);
+
+interface ChartData {
+  labels: string[];
+  datasets: {
+    label: string;
+    data: number[];
+    fill: boolean;
+    borderColor: string;
+    tension: number;
+  }[];
+}
+
+function Portfolio({ updateCount }: { updateCount: number }) {
+  const [portfolioValue, setPortfolioValue] = useState<number>(0);
+  const [chartData, setChartData] = useState<ChartData>({
+    labels: [],
+    datasets: [
+      {
+        label: "Portfolio Value",
+        data: [],
+        fill: false,
+        borderColor: "rgba(75,192,192,1)",
+        tension: 0.1,
+      },
+    ],
+  });
 
   useEffect(() => {
     fetchAssets();
@@ -27,10 +71,28 @@ function Portfolio({ updateCount }: any) {
       .then((res) => res.json())
       .then((data) => {
         let totalValue = 0;
+        let chartLabels: string[] = [];
+        let chartDataPoints: number[] = [];
+        
         data.data.forEach((asset: any) => {
           totalValue += asset.buy_price * asset.quantity;
+          chartLabels.push(asset.asset_symbol);
+          chartDataPoints.push(asset.buy_price * asset.quantity);
         });
+
         setPortfolioValue(totalValue);
+        setChartData({
+          labels: chartLabels,
+          datasets: [
+            {
+              label: "Portfolio Value",
+              data: chartDataPoints,
+              fill: false,
+              borderColor: "rgba(75,192,192,1)",
+              tension: 0.1,
+            },
+          ],
+        });
       });
   }
 
@@ -39,6 +101,9 @@ function Portfolio({ updateCount }: any) {
       <h2 className="text-lg font-bold">Portfolio</h2>
       <p>${formatNumber(portfolioValue)}</p>
       <p className="text-green-500">$0 (0%) last week</p>
+      <div>
+        <Line data={chartData} />
+      </div>
     </div>
   );
 }

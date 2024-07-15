@@ -33,7 +33,7 @@ function Investments({ updateCount }: InvestmentsProps) {
       setLoading(false);
     };
 
-    if (assets.length > 0) {
+    if (assets?.length > 0) {
       fetchStockPrices();
     }
   }, [assets]);
@@ -111,7 +111,13 @@ function Investments({ updateCount }: InvestmentsProps) {
                 <td className="px-4 py-2">
                   ${(asset.buy_price * asset.quantity).toFixed(2)}
                 </td>
-                <td className="px-4 py-2">
+                <td
+                  className={`px-4 py-2
+                  ${
+                    Number(asset.change) > 0 ? "text-green-500" : "text-red-500"
+                  }
+                  `}
+                >
                   {calculatePercentageDifference(
                     asset.buy_price,
                     Number(asset.change)
