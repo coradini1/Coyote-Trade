@@ -58,7 +58,7 @@ function Portfolio({ updateCount }: { updateCount: number }) {
   }
 
   async function fetchAssets() {
-    const token = Cookies.get("token");
+     const token = localStorage.getItem("token");
 
     fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/assets/allWeb`, {
       method: "GET",
@@ -75,9 +75,9 @@ function Portfolio({ updateCount }: { updateCount: number }) {
         let chartDataPoints: number[] = [];
         
         data.data.forEach((asset: any) => {
-          totalValue += asset.buy_price * asset.quantity;
+          totalValue += asset.avg_price * asset.quantity;
           chartLabels.push(asset.asset_symbol);
-          chartDataPoints.push(asset.buy_price * asset.quantity);
+          chartDataPoints.push(asset.avg_price * asset.quantity);
         });
 
         setPortfolioValue(totalValue);
@@ -97,10 +97,10 @@ function Portfolio({ updateCount }: { updateCount: number }) {
   }
 
   return (
-    <div className="portfolio bg-white p-4 rounded shadow">
+    <div className="portfolio bg-white p-4 rounded shadow flex flex-col rounded-lg border-2 border-solid border-lavender bg-white p-4 dark:bg-foregroundDark">
       <h2 className="text-lg font-bold">Portfolio</h2>
       <p>${formatNumber(portfolioValue)}</p>
-      <div>
+      <div className="mt-4 items-center">
         <Line data={chartData} />
       </div>
     </div>

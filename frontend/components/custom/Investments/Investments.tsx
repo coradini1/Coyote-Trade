@@ -1,15 +1,14 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
-
 import Spinner from "@/components/custom/Spinner/Spinner";
 
 interface Asset {
   asset_name: string;
   asset_symbol: string;
   quantity: number;
-  buy_price: number;
-  change: string;
+  avg_price: number;
+  change: number;
 }
 
 interface InvestmentsProps {
@@ -44,7 +43,10 @@ function Investments({ updateCount }: InvestmentsProps) {
     }
     const difference = newPrice - oldPrice;
     const percentageDifference = (difference / oldPrice) * 100;
-    return percentageDifference.toFixed(2);
+    return {
+      percentage: percentageDifference.toFixed(2),
+      absolute: difference.toFixed(2),
+    };
   }
 
   async function fetchStockPrice(symbol: string) {
@@ -59,7 +61,7 @@ function Investments({ updateCount }: InvestmentsProps) {
       }
     );
     const stockPrice = await response.json();
-    return stockPrice.data;
+    return Number(stockPrice.data);
   }
 
   useEffect(() => {
@@ -67,7 +69,7 @@ function Investments({ updateCount }: InvestmentsProps) {
   }, [updateCount]);
 
   function fetchAssets() {
-    const token = Cookies.get("token");
+    const token = localStorage.getItem("token");
 
     fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/assets/allWeb`, {
       method: "GET",
@@ -87,7 +89,7 @@ function Investments({ updateCount }: InvestmentsProps) {
   }
 
   return (
-    <div className="investments bg-white p-4 rounded shadow max-h-96 overflow-y-auto">
+    <div className="investments max-h-96 overflow-y-auto rounded shadow flex flex-col border-2 border-solid border-lavender bg-white p-4 dark:bg-foregroundDark">
       <h2 className="text-lg font-bold">Investments</h2>
       {loading ? (
         <Spinner />
@@ -98,34 +100,43 @@ function Investments({ updateCount }: InvestmentsProps) {
               <th className="px-4 py-2 text-left">Name</th>
               <th className="px-4 py-2 text-left">Symbol</th>
               <th className="px-4 py-2 text-left">Quantity</th>
-              <th className="px-4 py-2 text-left">Value</th>
+              <th className="px-4 py-2 text-left">Avg Price</th>
               <th className="px-4 py-2 text-left">Change</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
-            {combinedData.map((asset, index) => (
-              <tr key={index}>
-                <td className="px-4 py-2">{asset.asset_name}</td>
-                <td className="px-4 py-2">{asset.asset_symbol}</td>
-                <td className="px-4 py-2">{asset.quantity}</td>
-                <td className="px-4 py-2">
-                  ${(asset.buy_price * asset.quantity).toFixed(2)}
-                </td>
-                <td
-                  className={`px-4 py-2
-                  ${
-                    Number(asset.change) > 0 ? "text-green-500" : "text-red-500"
-                  }
-                  `}
-                >
-                  {calculatePercentageDifference(
-                    asset.buy_price,
-                    Number(asset.change)
-                  )}
-                  %
-                </td>
-              </tr>
-            ))}
+            {combinedData
+              .filter((asset) => asset.quantity > 0)
+              .map((asset, index) => {
+                const { percentage, absolute } = calculatePercentageDifference(
+                  asset.avg_price,
+                  Number(asset.change)
+                );
+                const isPositiveChange = Number(percentage) > 0;
+                const isZeroChange = Number(percentage) === 0;
+
+                return (
+                  <tr key={index}>
+                    <td className="px-4 py-2">{asset.asset_name}</td>
+                    <td className="px-4 py-2">{asset.asset_symbol}</td>
+                    <td className="px-4 py-2">{asset.quantity}</td>
+                    <td className="px-4 py-2">
+                      ${(asset.avg_price * asset.quantity).toFixed(2)}
+                    </td>
+                    <td
+                      className={`px-4 py-2 ${
+                        isZeroChange
+                          ? ""
+                          : isPositiveChange
+                          ? "text-green-500"
+                          : "text-red-500"
+                      }`}
+                    >
+                      {percentage}% ({isPositiveChange ? "+" : ""}${absolute})
+                    </td>
+                  </tr>
+                );
+              })}
           </tbody>
         </table>
       )}

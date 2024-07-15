@@ -230,7 +230,7 @@ function StockDetailModal({
             )}
           </button>
 
-          {userShares.quantity > 0 && (
+          {userShares?.quantity > 0 && (
             <button
               onClick={() => {
                 setLoading("sell");

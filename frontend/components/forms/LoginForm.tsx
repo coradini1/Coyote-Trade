@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { motion } from "framer-motion";
+import Cookies from "js-cookie";
 
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -47,6 +48,8 @@ function LoginForm({ item }: any) {
       const data = await response.json();
 
       document.cookie = `token=${data.token}; path=/;`;
+      Cookies.set("token", data.token);
+      localStorage.setItem("token", data.token);
 
 
       if (!response.ok) {

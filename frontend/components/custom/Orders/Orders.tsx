@@ -27,7 +27,7 @@ function Orders() {
   useEffect(() => {}, [orderData]);
 
   return (
-    <div className="orders bg-white p-4 rounded shadow max-h-96 overflow-y-auto">
+    <div className="orders bg-white p-4 rounded shadow max-h-96 overflow-y-auto flex flex-col border-2 border-solid border-lavender dark:bg-foregroundDark">
       <h2 className="text-lg font-bold">Orders</h2>
       <table className="min-w-full bg-white divide-y divide-gray-200">
         <thead>
