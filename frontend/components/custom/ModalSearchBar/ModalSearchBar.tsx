@@ -17,7 +17,7 @@ function ModalSearchBar({ isOpen, onClose, children }: ModalProps) {
   if (!isOpen) return null;
 
   return (
-    <div className="modal-overlay" onClick={handleOverlayClick}>
+    <div className="modal-overlay overflow-y-auto" onClick={handleOverlayClick}>
       <div className="modal-content">
         <div className="modal-header">
           <button onClick={onClose} className="text-red-500">

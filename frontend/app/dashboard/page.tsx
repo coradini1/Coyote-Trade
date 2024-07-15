@@ -52,7 +52,7 @@ export default function Page() {
   }
 
   async function fetchAssets() {
-    const token = Cookies.get("token");
+     const token = localStorage.getItem("token");
 
     fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/assets/allWeb`, {
       method: "GET",
@@ -70,7 +70,7 @@ export default function Page() {
 
   const handleSearch = async (query: string) => {
     setLoading(true);
-    const token = Cookies.get("token");
+     const token = localStorage.getItem("token");
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/api/stocks/search/${query}`,
@@ -126,7 +126,7 @@ export default function Page() {
           <Portfolio key={updateCount} updateCount={0} />
         </div>
         <div className="md:col-span-1 space-y-4">
-          <UserCard userData={user} key={updateCount} updateCount={0} />
+            <UserCard userData={user} key={updateCount} updateCount={0} />
         </div>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
