@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
-import { db } from "../db/db";
+import { db } from "../../db/db";
+import { sql } from "drizzle-orm";
 
 export async function assetsController(req: Request, res: Response) {
   const userEmail = req.user?.email;
-
 
   if (!userEmail) {
     return res.status(400).json({
@@ -25,6 +25,13 @@ export async function assetsController(req: Request, res: Response) {
     const userAssets = await db.query.assetsTable.findMany({
       where: (asset, { eq }) => eq(asset.user_id, user.id),
     });
+
+    // const averagePrice = await db.query.ordersTable.aggregate({
+    //   avg: {
+    //     amount: true,
+    //   },
+    //   where: (order, { eq }) => eq(order.user_id, user.id),
+    // });
 
     return res.status(200).json({
       message: "Assets owned by the user",

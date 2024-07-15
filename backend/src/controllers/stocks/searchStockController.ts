@@ -1,7 +1,7 @@
 import { Request, Response } from "express"
 import { alpaca } from "../../client/alpaca"
 
-export async function searchStocksController(req: Request, res: Response) {
+export async function searchStockController(req: Request, res: Response) {
   const query = req.params.stock.charAt(0).toUpperCase() + req.params.stock.slice(1)  
 
   let stockData = []

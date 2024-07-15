@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
-import { db } from "../db/db";
+import { db } from "../../db/db";
 
 export async function getAssetsPriceController(req: Request, res: Response) {
+  console.log("oi")
   const symbol = req.params.symbol;
   try {
     const options = {
@@ -25,10 +26,10 @@ export async function getAssetsPriceController(req: Request, res: Response) {
         message: "Failed to retrieve asset buy price",
       });
     }
-
+    const averagePrice = (stockPrices.quotes[symbol]?.ap + stockPrices.quotes[symbol]?.bp) / 2;
     return res.status(200).json({
       message: "Asset price retrieved successfully",
-      data: stockPrices.quotes[symbol]?.ap || stockPrices.quotes[symbol]?.bp,
+      data: averagePrice,
     });
   } catch (error) {
     console.error("Error retrieving assets price:", error);

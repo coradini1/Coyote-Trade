@@ -1,8 +1,8 @@
 import express from "express";
 import { authenticateMobileToken } from "../middleware/mobileTokenMiddleware";
-import { assetsController } from "../controllers/assetsController";
+import { assetsController } from "../controllers/stocks/getStocksUserController";
 import { authenticateToken } from "../middleware/tokenMiddleware";
-import { getAssetsPriceController } from "../controllers/getAssetsPriceController";
+import { getAssetsPriceController } from "../controllers/stocks/getStocksPriceController";
 
 const router = express.Router();
 
