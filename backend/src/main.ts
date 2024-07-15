@@ -12,6 +12,7 @@ import metrics from "./routes/metrics";
 import assets from "./routes/assets";
 import alerts from "./routes/alerts";
 import orders from "./routes/orders";
+import stripe from "./routes/stripe";
 
 // Server
 const app: Express = express();
@@ -36,6 +37,7 @@ app.use("/api/metrics", metrics);
 app.use("/api/assets", assets);
 app.use("/api/alerts", alerts);
 app.use("/api/orders", orders);
+app.use("/api/stripe", stripe);
 
 app.listen(port, () => {
   console.log(`CoyoteTrade-API running at http://localhost:${port}`);
