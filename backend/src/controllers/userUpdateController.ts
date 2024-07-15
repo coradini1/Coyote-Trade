@@ -16,52 +16,59 @@ export async function userUpdateController(req: any, res: Response) {
     default_email,
   } = req.body.user;
 
-  const emailCheck = await db.query.usersTable.findFirst({
-    where: (user, { eq }) => eq(user.email, default_email),
-  });
-
-  if (emailCheck) {
-    return res.status(404).json({
-      message: "Email already exists",
+  if (email && email !== default_email) {
+    const emailCheck = await db.query.usersTable.findFirst({
+      where: (user, { eq }) => eq(user.email, email),
     });
+
+    if (emailCheck) {
+      return res.status(404).json({
+        message: "Email already exists",
+      });
+    }
   }
 
   try {
-    if (name)
+    if (name) {
       await db
         .update(usersTable)
-        .set({ name: name })
-        .where(eq(usersTable.email, email));
-    if (surname)
-      await db
-        .update(usersTable)
-        .set({ surname: surname })
-        .where(eq(usersTable.email, email));
-    if (email !== "")
-      await db
-        .update(usersTable)
-        .set({ email: email })
+        .set({ name })
         .where(eq(usersTable.email, default_email));
-    if (address)
+    }
+    if (surname) {
       await db
         .update(usersTable)
-        .set({ address: address })
-        .where(eq(usersTable.email, email));
-    if (birthdate)
+        .set({ surname })
+        .where(eq(usersTable.email, default_email));
+    }
+    if (email && email !== default_email) {
       await db
         .update(usersTable)
-        .set({ birthdate: birthdate })
-        .where(eq(usersTable.email, email));
-    if (logged_user_role === "admin") {
-      if (role)
-        await db
-          .update(usersTable)
-          .set({ role: role })
-          .where(eq(usersTable.email, email));
+        .set({ email })
+        .where(eq(usersTable.email, default_email));
+    }
+    if (address) {
+      await db
+        .update(usersTable)
+        .set({ address })
+        .where(eq(usersTable.email, default_email));
+    }
+    if (birthdate) {
+      await db
+        .update(usersTable)
+        .set({ birthdate })
+        .where(eq(usersTable.email, default_email));
+    }
+    if (logged_user_role === "admin" && role) {
+      await db
+        .update(usersTable)
+        .set({ role })
+        .where(eq(usersTable.email, default_email));
     }
   } catch (e) {
-    res.status(500).json({ message: "Error updating user" });
+    return res.status(500).json({ message: "Error updating user" });
   }
+
   res.clearCookie("token", {
     httpOnly: true,
   });
