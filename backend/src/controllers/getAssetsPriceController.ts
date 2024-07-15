@@ -19,7 +19,6 @@ export async function getAssetsPriceController(req: Request, res: Response) {
       .then((response) => response.json())
       .then((data) => data);
     const stockPrices = await dataStockPrices;
-    console.log(stockPrices);
 
     if (!stockPrices.quotes[symbol]?.ap && !stockPrices.quotes[symbol]?.bp) {
       return res.status(400).json({

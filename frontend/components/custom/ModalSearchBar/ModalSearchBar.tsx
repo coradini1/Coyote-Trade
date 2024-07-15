@@ -1,6 +1,6 @@
 import React from "react";
 import { AiOutlineClose } from "react-icons/ai";
-import './ModalSearchBar.css';
+import "./ModalSearchBar.css";
 
 interface ModalProps {
   isOpen: boolean;
@@ -9,21 +9,24 @@ interface ModalProps {
 }
 
 function ModalSearchBar({ isOpen, onClose, children }: ModalProps) {
+  const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
+  };
   if (!isOpen) return null;
 
   return (
-    <div className="modal-overlay">
+    <div className="modal-overlay" onClick={handleOverlayClick}>
       <div className="modal-content">
         <div className="modal-header">
           <button onClick={onClose} className="text-red-500">
-            <AiOutlineClose />
+            <AiOutlineClose size={20} />
           </button>
         </div>
         <div className="modal-body">
           <h3>Results of the search</h3>
-          <div className="stock-list">
-            {children}
-          </div>
+          <div className="stock-list">{children}</div>
         </div>
       </div>
     </div>

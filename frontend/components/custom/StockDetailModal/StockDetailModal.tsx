@@ -19,9 +19,13 @@ interface StockDetailModalProps {
     founded: number;
     industry: string;
   };
-  userShares: any;
+  userShares: {
+    quantity: number;
+  };
   closeSearchModal: () => void;
-  user: any;
+  user: {
+    balance: number;
+  };
   setUser: (user: any) => void;
 }
 
@@ -35,8 +39,7 @@ function StockDetailModal({
   setUser,
 }: StockDetailModalProps) {
   const [loading, setLoading] = useState<"buy" | "sell" | null>(null);
-  const symbol = stock.symbol;
-  const [stockPrices, setStockPrices] = useState<any>(0);
+  const [stockPrices, setStockPrices] = useState<number>(0);
   const [stockQuantity, setStockQuantity] = useState<number>(1);
   const [inputError, setInputError] = useState<boolean>(false);
   const [errorInput, setErrorInput] = useState<string>("");
@@ -51,7 +54,7 @@ function StockDetailModal({
     ) {
       setInputError(true);
       setErrorInput("Insufficient balance");
-    } else if (loading === "sell" && stockQuantity > userShares.quantity) {
+    } else if (loading === "sell" && stockQuantity > userShares?.quantity) {
       setInputError(true);
       setErrorInput("Insufficient shares");
     } else {
@@ -59,37 +62,88 @@ function StockDetailModal({
     }
   }, [stockQuantity, stockPrices, loading, user, userShares]);
 
-  function formatNumber(value: number) {
-    return value.toLocaleString("en-US", {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    });
-  }
-
   useEffect(() => {
     if (!isOpen) return;
-    async function fetchStockPrice() {
+
+    async function fetchData() {
+      try {
+        const [stockPriceResponse, userResponse] = await Promise.all([
+          fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}/api/assets/get-stock-price/${stock.symbol}`,
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              credentials: "include",
+            }
+          ),
+          fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/user`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            credentials: "include",
+          }),
+        ]);
+
+        if (!stockPriceResponse.ok || !userResponse.ok) {
+          throw new Error("Failed to fetch data");
+        }
+
+        const [stockPriceData, userData] = await Promise.all([
+          stockPriceResponse.json(),
+          userResponse.json(),
+        ]);
+
+        setStockPrices(stockPriceData?.data);
+        setUser(userData?.user);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        window.location.href = "/login";
+      }
+    }
+
+    fetchData();
+  }, [isOpen, stock.symbol, setUser]);
+
+  const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
+  };
+
+  const handleOrder = async (side: "buy" | "sell") => {
+    setLoading(side);
+    const token = Cookies.get("token");
+
+    try {
+      const quantity = Number(stockQuantity);
+
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/assets/get-stock-price/${symbol}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/stocks/order`,
         {
-          method: "GET",
+          method: "POST",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
           },
           credentials: "include",
+          body: JSON.stringify({
+            symbol: stock.symbol,
+            qty: quantity,
+            side,
+            type: "market",
+            time_in_force: "day",
+          }),
         }
       );
-      const stockPrice = await response.json();
-      setStockPrices(stockPrice.data);
-      console.log(stockPrice);
-    }
-    fetchStockPrice();
-  }, [isOpen]);
 
-  useEffect(() => {
-    if (!isOpen) return;
-    async function fetchData() {
-      const response = await fetch(
+      if (!response.ok) {
+        throw new Error("Failed to place order");
+      }
+
+      const updatedUserResponse = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/api/user`,
         {
           method: "GET",
@@ -100,82 +154,47 @@ function StockDetailModal({
         }
       );
 
-      const userData = await response.json();
-
-      if (
-        (userData?.user?.role !== "admin" && userData?.user?.role !== "user") ||
-        !userData
-      ) {
-        return (window.location.href = "/login");
+      if (!updatedUserResponse.ok) {
+        throw new Error("Failed to fetch updated user data");
       }
-      setUser(userData.user);
-    }
 
-    fetchData();
-  }, [isOpen]);
+      const updatedUserData = await updatedUserResponse.json();
+      setUser(updatedUserData.user);
 
-  const handleOrder = (side: "buy" | "sell") => {
-    setLoading(side);
-    const token = Cookies.get("token");
-    const quantity = Number(
-      (document.querySelector("input[type=number]") as HTMLInputElement).value
-    );
-
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/stocks/order`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      credentials: "include",
-      body: JSON.stringify({
-        symbol: symbol,
-        qty: quantity,
-        side,
-        type: "market",
-        time_in_force: "day",
-      }),
-    }).then(async (res) => {
+      toast.success("Order placed successfully");
+      setTimeout(() => {
+        closeSearchModal();
+        onClose();
+        window.location.reload();
+      }, 3000);
+    } catch (error) {
+      console.error("Error handling order:", error);
+      toast.error("Failed to place order");
+    } finally {
       setLoading(null);
-      if (res.ok) {
-        const updatedUserResponse = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/user`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            credentials: "include",
-          }
-        );
-        const updatedUserData = await updatedUserResponse.json();
-        setUser(updatedUserData.user);
-
-        toast.success("Order placed successfully");
-        setTimeout(() => {
-          closeSearchModal();
-          onClose();
-          window.location.reload();
-        }, 3000);
-      }
-      if (res.status === 400) {
-        const responseData = await res.json();
-        const response = responseData.message;
-        toast.error(response);
-      }
-    });
+    }
   };
 
   if (!isOpen) return null;
 
+  function formatNumber(value: number) {
+    return value.toLocaleString("en-US", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+  }
+
   return (
-    <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-800 bg-opacity-50">
+    <div
+      className="fixed inset-0 flex items-center justify-center z-50 bg-gray-800 bg-opacity-50"
+      onClick={handleOverlayClick}
+    >
       <ToastContainer />
       <div className="bg-white p-6 rounded shadow-lg w-80">
         <div className="flex justify-between items-center">
           <h2 className="text-xl font-bold">{stock.name}</h2>
           <button onClick={onClose} className="text-red-500">
-            <AiOutlineClose />
+            <AiOutlineClose size={20} />
           </button>
         </div>
         <p className="text-gray-500">{stock.symbol}</p>
@@ -186,6 +205,7 @@ function StockDetailModal({
           onChange={(e) => setStockQuantity(Number(e.target.value))}
           min={1}
         />
+
         {inputError && (
           <p className="text-red-500 text-sm mt-1">{errorInput}</p>
         )}
@@ -210,7 +230,7 @@ function StockDetailModal({
             )}
           </button>
 
-          {userShares && (
+          {userShares.quantity > 0 && (
             <button
               onClick={() => {
                 setLoading("sell");
@@ -222,10 +242,9 @@ function StockDetailModal({
                 color: "white",
               }}
               disabled={
-                userShares.quantity <= 0 ||
                 loading === "sell" ||
                 inputError ||
-                stockQuantity > userShares.quantity
+                stockQuantity > userShares?.quantity
               }
             >
               {loading === "sell" ? (

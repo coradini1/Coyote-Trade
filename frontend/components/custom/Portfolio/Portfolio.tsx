@@ -100,7 +100,6 @@ function Portfolio({ updateCount }: { updateCount: number }) {
     <div className="portfolio bg-white p-4 rounded shadow">
       <h2 className="text-lg font-bold">Portfolio</h2>
       <p>${formatNumber(portfolioValue)}</p>
-      <p className="text-green-500">$0 (0%) last week</p>
       <div>
         <Line data={chartData} />
       </div>
