@@ -1,8 +1,6 @@
 import { Request, Response } from "express";
-import { db } from "../../db/db";
 
 export async function getAssetsPriceController(req: Request, res: Response) {
-  console.log("oi")
   const symbol = req.params.symbol;
   try {
     const options = {

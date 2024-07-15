@@ -1,7 +1,5 @@
 import { Request, Response } from "express"
-
 import { db } from "../db/db"
-
 import { LoginBody } from "../types"
 import { comparePasswords, generateToken, userContext } from "../utils/utils"
 

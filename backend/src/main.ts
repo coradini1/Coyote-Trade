@@ -13,6 +13,7 @@ import assets from "./routes/assets";
 import alerts from "./routes/alerts";
 import orders from "./routes/orders";
 import stripe from "./routes/stripe";
+import admin from "./routes/admin";
 
 // Server
 const app: Express = express();
@@ -22,7 +23,7 @@ const port = 3002;
 app.use(
   cors({
     credentials: true,
-    origin: "https://coyotetrade.com.br",
+    origin: "http://localhost:3000",
   })
 );
 app.use(cookieParser());
@@ -38,6 +39,7 @@ app.use("/api/assets", assets);
 app.use("/api/alerts", alerts);
 app.use("/api/orders", orders);
 app.use("/api/stripe", stripe);
+app.use("/api/admin", admin);
 
 app.listen(port, () => {
   console.log(`CoyoteTrade-API running at http://localhost:${port}`);
