@@ -23,7 +23,7 @@ const port = 3002;
 app.use(
   cors({
     credentials: true,
-    origin: "http://localhost:3000",
+    origin: "https://coyotetrade.com.br",
   })
 );
 app.use(cookieParser());
