@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { db } from "../../db/db";
 import { sql, count, sum } from "drizzle-orm";
-import { ordersTable } from "../../db/schema";
+import { ordersTable, assetsTable } from "../../db/schema";
 
 export async function getTotalAssetsTradedController(
   req: Request,
@@ -18,11 +18,30 @@ export async function getTotalAssetsTradedController(
 
     const orders = await db.query.ordersTable.findMany();
 
+    const ordersWithAssets = await Promise.all(
+      orders.map(async (order) => {
+        const asset = await db
+          .select({
+            assetName: assetsTable.asset_name,
+            assetSymbol: assetsTable.asset_symbol,
+          })
+          .from(assetsTable)
+          .where(sql`id = ${order.asset_id}`)
+          .execute();
+    
+        return {
+          ...order,
+          asset_name: asset[0]?.assetName || "Unknown",
+          asset_symbol: asset[0]?.assetSymbol || "UNK",
+        };
+      })
+    );
+
     console.log(result);
     return res.status(200).json({
       message: "Total orders and quantity",
       data: result[0],
-      orders: orders,
+      orders: ordersWithAssets,
     });
   } catch (error) {
     console.error("Error retrieving total assets traded:", error);

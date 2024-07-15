@@ -219,7 +219,7 @@ export default function Page() {
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <DialogContent className="max-w-4xl p-6 bg-white dark:bg-foregroundDark rounded-lg shadow-lg">
           <DialogHeader>
-            <DialogTitle>Order Details</DialogTitle>
+            <DialogTitle>All Users Orders</DialogTitle>
           </DialogHeader>
           <ModalOrders orderData={orderData} />
           <DialogFooter>

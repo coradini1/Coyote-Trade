@@ -12,7 +12,6 @@ function ModalOrders({ orderData }: any) {
   return (
     <>
       <div className="orders bg-white p-4 rounded shadow max-h-96 overflow-y-auto flex flex-col border-2 border-solid border-lavender dark:bg-foregroundDark">
-        <h2 className="text-lg font-bold">Orders</h2>
         <table className="min-w-full bg-white divide-y divide-gray-200">
           <thead>
             <tr className="bg-gray-100">
@@ -28,8 +27,8 @@ function ModalOrders({ orderData }: any) {
           <tbody className="divide-y divide-gray-200">
             {orderData?.map((order: any, index: number) => (
               <tr key={index}>
-                <td className="px-4 py-2">{order.asset?.asset_name}</td>
-                <td className="px-4 py-2">{order.asset?.asset_symbol}</td>
+                <td className="px-4 py-2">{order.asset_name}</td>
+                <td className="px-4 py-2">{order.asset_symbol}</td>
                 <td className="px-4 py-2">{order.quantity}</td>
                 <td className="px-4 py-2">${order?.amount?.toFixed(2)}</td>
                 <td className="px-4 py-2">{formatDate(order.createdAt)}</td>
