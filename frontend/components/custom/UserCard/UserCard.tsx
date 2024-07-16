@@ -61,6 +61,38 @@ function UserCard({ userData, updateCount }: any) {
       console.error("Deposit error:", error);
     }
   };
+  const handleWithdraw = async () => {
+    const token = localStorage.getItem("token");
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/user/withdraw`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ amount: depositAmount }),
+          credentials: "include",
+        }
+      );
+
+      if (!response.ok) {
+        toast.error("Failed to withdraw");
+        throw new Error("Withdraw failed");
+      }
+      const updatedUserData = await response.json();
+      setSelectedUser(updatedUserData);
+      setIsModalOpen(false);
+      setDepositAmount(0);
+      toast.success("Withdraw successful");
+      setTimeout(() => {
+        window.location.reload();
+      }, 3000);
+    } catch (error) {
+      console.error("Withdraw error:", error);
+    }
+  };
 
   const handleLogout = () => {
     fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/user/logout`, {
@@ -92,7 +124,7 @@ function UserCard({ userData, updateCount }: any) {
         onClick={() => openModal(userData)}
       >
         Account settings
-      </button> 
+      </button>
       <hr
         style={{
           border: 0,
@@ -133,6 +165,7 @@ function UserCard({ userData, updateCount }: any) {
         <button
           className="text-white px-4 py-1 rounded"
           style={{ backgroundColor: "#7287FD" }}
+          onClick={handleWithdraw}
         >
           Withdraw
         </button>
