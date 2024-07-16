@@ -107,7 +107,7 @@ export async function orderStockController(req: Request, res: Response) {
         if (newQuantity === 0) {
           await db
             .update(assetsTable)
-            .set({ avg_price: undefined })
+            .set({ avg_price: 0 })
             .where(sql`id = ${asset.id}`)
             .execute();
         }

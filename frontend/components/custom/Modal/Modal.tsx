@@ -108,8 +108,8 @@ function Modal({ onClose, userData }: any) {
             <DialogHeader>
               <DialogTitle className="text-white">Edit profile</DialogTitle>
               <DialogDescription className="text-white">
-                Make changes to users profiles here. Click save when you&#39;re
-                done.
+                Make changes to profile information here. Click UPDATE PROFILE
+                when you're done.
               </DialogDescription>
             </DialogHeader>
             <div className="grid gap-4 py-4">

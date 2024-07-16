@@ -1,10 +1,8 @@
-import React from "react";
-import Cookies from "js-cookie";
-import { useState, useEffect } from "react";
-import { Line } from "react-chartjs-2";
+import React, { useState, useEffect } from "react";
+import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
-  LineElement,
+  BarElement,
   PointElement,
   LinearScale,
   Title,
@@ -14,7 +12,7 @@ import {
 } from "chart.js";
 
 ChartJS.register(
-  LineElement,
+  BarElement,
   PointElement,
   LinearScale,
   Title,
@@ -28,9 +26,9 @@ interface ChartData {
   datasets: {
     label: string;
     data: number[];
-    fill: boolean;
+    backgroundColor: string;
     borderColor: string;
-    tension: number;
+    borderWidth: number;
   }[];
 }
 
@@ -42,9 +40,9 @@ function Portfolio({ updateCount }: { updateCount: number }) {
       {
         label: "Portfolio Value",
         data: [],
-        fill: false,
-        borderColor: "rgba(75,192,192,1)",
-        tension: 0.1,
+        backgroundColor: "hsl(231 97% 72% / 0.2)",
+        borderColor: "hsl(231 97% 72% / 1)",
+        borderWidth: 1,
       },
     ],
   });
@@ -54,11 +52,14 @@ function Portfolio({ updateCount }: { updateCount: number }) {
   }, [updateCount]);
 
   function formatNumber(value: number) {
-    return value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    return value.toLocaleString("en-US", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
   }
 
   async function fetchAssets() {
-     const token = localStorage.getItem("token");
+    const token = localStorage.getItem("token");
 
     fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/assets/allWeb`, {
       method: "GET",
@@ -73,7 +74,7 @@ function Portfolio({ updateCount }: { updateCount: number }) {
         let totalValue = 0;
         let chartLabels: string[] = [];
         let chartDataPoints: number[] = [];
-        
+
         data.data.forEach((asset: any) => {
           totalValue += asset.avg_price * asset.quantity;
           chartLabels.push(asset.asset_symbol);
@@ -87,9 +88,9 @@ function Portfolio({ updateCount }: { updateCount: number }) {
             {
               label: "Portfolio Value",
               data: chartDataPoints,
-              fill: false,
-              borderColor: "rgba(75,192,192,1)",
-              tension: 0.1,
+              backgroundColor: "hsl(231 97% 72% / 0.2)",
+              borderColor: "hsl(231 97% 72% / 1)",
+              borderWidth: 1,
             },
           ],
         });
@@ -97,11 +98,11 @@ function Portfolio({ updateCount }: { updateCount: number }) {
   }
 
   return (
-    <div className="portfolio bg-white p-4 rounded shadow flex flex-col rounded-lg border-2 border-solid border-lavender bg-white p-4 dark:bg-foregroundDark">
+    <div className="portfolio bg-white p-4 rounded shadow flex flex-col border-2 border-solid border-lavender dark:bg-foregroundDark">
       <h2 className="text-lg font-bold">Portfolio</h2>
-      <p>${formatNumber(portfolioValue)}</p>
+      <p className="text-2xl font-bold mt-2">${formatNumber(portfolioValue)}</p>
       <div className="mt-4 items-center">
-        <Line data={chartData} />
+        <Bar data={chartData} /> 
       </div>
     </div>
   );

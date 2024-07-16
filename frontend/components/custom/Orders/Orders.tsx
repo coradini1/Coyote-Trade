@@ -1,30 +1,35 @@
 import React, { useEffect, useState } from "react";
+import { format } from "date-fns-tz";
+import { addHours, parseISO } from "date-fns";
 import Cookie from "js-cookie";
 function Orders() {
   const [orderData, setOrderData] = useState([{}] as any);
-  const [stockPrices, setStockPrices] = useState<any>();
 
-  async function fetchOrders() {
-    const token = Cookie.get("token");
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/orders/get`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      credentials: "include",
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setOrderData(data.data);
-      });
-  }
+  const formatDate = (dateString: string) => {
+    const pattern = "dd/MM/yyyy HH:mm:ss";
+    const timeZone = "America/Sao_Paulo";
+    const zonedDate = addHours(parseISO(dateString), -3);
+    return format(zonedDate, pattern, { timeZone });
+  };
 
   useEffect(() => {
+    async function fetchOrders() {
+      const token = Cookie.get("token");
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/orders/get`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        credentials: "include",
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          setOrderData(data.data);
+        });
+    }
     fetchOrders();
   }, []);
-
-  useEffect(() => {}, [orderData]);
 
   return (
     <div className="orders bg-white p-4 rounded shadow max-h-96 overflow-y-auto flex flex-col border-2 border-solid border-lavender dark:bg-foregroundDark">
@@ -48,7 +53,10 @@ function Orders() {
               <td className="px-4 py-2">{order.asset?.asset_symbol}</td>
               <td className="px-4 py-2">{order.quantity}</td>
               <td className="px-4 py-2">${order?.amount?.toFixed(2)}</td>
-              <td className="px-4 py-2">{order.createdAt}</td>
+              {order.createdAt && (
+                <td className="px-4 py-2">{formatDate(order.createdAt)}</td>
+              )}
+
               <td
                 className={`px-4 py-2
                 ${order.type === "buy" ? "text-green-500" : "text-red-500"}
