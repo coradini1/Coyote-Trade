@@ -1,14 +1,13 @@
-"use client";
-import React, { useEffect, useState } from "react";
-import Cookies from "js-cookie";
-import Modal from "../Modal/Modal";
+import React, { useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { IoLogOutOutline } from "react-icons/io5";
+import Modal from "../Modal/Modal";
 
 function UserCard({ userData, updateCount }: any) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
-
-
+  const [depositAmount, setDepositAmount] = useState(0);
   const closeModal = () => {
     setIsModalOpen(false);
     setSelectedUser(null);
@@ -29,21 +28,71 @@ function UserCard({ userData, updateCount }: any) {
     });
   }
 
+  const handleDeposit = async () => {
+    const token = localStorage.getItem("token");
+    console.log("token", token);
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/user/deposit`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ amount: depositAmount }),
+          credentials: "include",
+        }
+      );
+
+      if (!response.ok) {
+        toast.error("Failed to deposit");
+        throw new Error("Deposit failed");
+      }
+      const updatedUserData = await response.json();
+      setSelectedUser(updatedUserData);
+      setIsModalOpen(false);
+      setDepositAmount(0);
+      toast.success("Deposit successful");
+      setTimeout(() => {
+        window.location.reload();
+      }, 3000);
+    } catch (error) {
+      console.error("Deposit error:", error);
+    }
+  };
+
+  const handleLogout = () => {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/user/logout`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    }).then(() => {
+      localStorage.removeItem("token");
+      window.location.href = "/login";
+    });
+  };
+
   return (
     <div className="user-card bg-white rounded shadow flex flex-col border-2 border-solid border-lavender p-4 dark:bg-foregroundDark">
-    
-
-      <h2 className="text-2xl font-bold">
-        {userData?.name} {userData?.surname}
-      </h2>
-
+      <ToastContainer />
+      <div className="flex justify-between items-center">
+        <h2 className="text-2xl font-bold">
+          {userData?.name} {userData?.surname}
+        </h2>
+        <button onClick={handleLogout}>
+          <IoLogOutOutline size={30} />
+        </button>
+      </div>
       <button
         className="text-white px-4 py-1 rounded mt-2"
         style={{ backgroundColor: "#7287FD" }}
         onClick={() => openModal(userData)}
       >
         Account settings
-      </button>
+      </button> 
       <hr
         style={{
           border: 0,
@@ -67,9 +116,17 @@ function UserCard({ userData, updateCount }: any) {
         </p>
       </div>
       <div className="flex space-x-2 mt-4">
+        <input
+          className="border-2 border-solid border-lavender p-2 rounded"
+          type="text"
+          value={depositAmount}
+          onChange={(e) => setDepositAmount(Number(e.target.value))}
+        />
+
         <button
           className="text-white px-4 py-1 rounded"
           style={{ backgroundColor: "#7287FD" }}
+          onClick={handleDeposit}
         >
           Deposit
         </button>
@@ -78,22 +135,6 @@ function UserCard({ userData, updateCount }: any) {
           style={{ backgroundColor: "#7287FD" }}
         >
           Withdraw
-        </button>
-        <button
-          onClick={() => {
-            fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/user/logout`, {
-              method: "GET",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              credentials: "include",
-            }).then(() => {
-              localStorage.removeItem("token");
-              window.location.href = "/login";
-            });
-          }}
-        >
-          <IoLogOutOutline size={30} />
         </button>
         {isModalOpen && (
           <Modal
