@@ -23,7 +23,7 @@ const port = 3002;
 app.use(
   cors({
     credentials: true,
-    origin: "https://coyotetrade.com.br",
+    origin: "https://coyote-trade.vercel.app",
   })
 );
 app.use(cookieParser());
